@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-display: 'Space Grotesk', ui-sans-serif, sans-serif;
+  --font-body: 'IBM Plex Sans', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html,
+body {
+  background-color: #08070b;
+  color: #e8e4dd;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+::selection {
+  background-color: #6c5ce0;
+  color: #08070b;
+}
+
+/* Visible focus states — never remove outline without replacing it */
+:focus-visible {
+  outline: 2px solid #9585f5;
+  outline-offset: 3px;
+}
+
+/* Respect reduced motion at the root: components should also check
+   this via the useReducedMotion hook before triggering GSAP/R3F work. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.hud-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
