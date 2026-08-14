@@ -134,7 +134,7 @@ export const projects: Project[] = [
       'This site — The Living Chronicle — is the next evolution of that work.',
     ],
     githubUrl: 'https://github.com/bharat-poojari/Bharat-Portfolio',
-    liveUrl: 'https://bharat-poojari.vercel.app',
+    liveUrl: 'https://bharat-poojari-portfolio.vercel.app',
   },
   // NOTE: resume achievements state "six" independently built applications,
   // but only five are named in the source resume. Do not fabricate a sixth —
