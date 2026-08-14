@@ -52,7 +52,7 @@ const socials = [
   {
     label: 'Instagram',
     short: 'IG',
-    href: 'https://instagram.com/bharat.poojari',
+    href: 'https://www.instagram.com/bharat_x_16?igsh=NDdsM3Btenp3MWY3',
     path: `
       M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.24 2.22.41
       .56.21.96.47 1.38.89.42.42.68.82.89 1.38.17.42.36

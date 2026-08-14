@@ -14,6 +14,7 @@ import {
   ExternalLink,
   FileText,
   Github,
+  Instagram,
   Linkedin,
   Mail,
   MessageSquare,
@@ -48,29 +49,29 @@ import { profile, internship } from '@/lib/content';
 const SOCIALS = [
   {
     name: 'GitHub',
-    handle: '@YOUR_USERNAME',
-    href: 'https://github.com/YOUR_USERNAME',
+    handle: '@bharat-poojari',
+    href: 'https://github.com/bharat-poojari',
     icon: Github,
     description: 'Projects & source code',
   },
   {
     name: 'LinkedIn',
-    handle: '/in/YOUR_PROFILE',
-    href: 'https://linkedin.com/in/YOUR_PROFILE',
+    handle: 'bharat-poojari',
+    href: 'https://www.linkedin.com/in/bharat-poojari-397618359',
     icon: Linkedin,
     description: 'Professional network',
   },
-  {
-    name: 'LeetCode',
-    handle: '@YOUR_USERNAME',
-    href: 'https://leetcode.com/YOUR_USERNAME',
-    icon: Code2,
-    description: 'Problem solving',
-  },
+{
+  name: 'Instagram',
+  handle: '@bharat_x_16',
+  href: 'https://www.instagram.com/bharat_x_16',
+  icon: Instagram,
+  description: 'Social media presence',
+},
   {
     name: 'Email',
     handle: 'Let’s connect',
-    href: 'mailto:YOUR_EMAIL@example.com',
+    href: 'bharatp0316@gmail.com',
     icon: Mail,
     description: 'Direct communication',
   },
@@ -183,13 +184,13 @@ const QUICK_ACTIONS = [
   {
     label: 'SOURCE',
     title: 'GitHub',
-    href: 'https://github.com/YOUR_USERNAME',
+    href: 'https://github.com/bharat-poojari',
     icon: Github,
   },
   {
     label: 'NETWORK',
     title: 'LinkedIn',
-    href: 'https://linkedin.com/in/YOUR_PROFILE',
+    href: 'https://www.linkedin.com/in/bharat-poojari-397618359',
     icon: Linkedin,
   },
   {
@@ -201,7 +202,7 @@ const QUICK_ACTIONS = [
   {
     label: 'CONTACT',
     title: 'Message',
-    href: 'mailto:YOUR_EMAIL@example.com',
+    href: 'mailto:bharatp0316@gmail.com',
     icon: MessageSquare,
   },
 ];
@@ -1108,91 +1109,7 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* ================================================================= */}
-        {/* ORIGIN SEQUENCE                                                   */}
-        {/* ================================================================= */}
-
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{
-            once: true,
-            amount: 0.15,
-          }}
-          className="mt-32"
-        >
-          <div className="mb-8 flex items-center gap-4">
-            <p className="hud-label text-[10px] tracking-[0.25em] text-signal">
-              ORIGIN SEQUENCE
-            </p>
-
-            <span className="h-px flex-1 bg-void-line" />
-
-            <span className="font-mono text-[8px] text-ash">
-              001 → ∞
-            </span>
-          </div>
-
-          <motion.div
-            variants={stagger}
-            className="grid gap-px border border-void-line bg-void-line md:grid-cols-2 lg:grid-cols-4"
-          >
-            {ORIGIN_PHASES.map((phase, index) => (
-              <motion.div
-                key={phase.number}
-                variants={reveal}
-                whileHover={{
-                  y: -8,
-                  backgroundColor:
-                    'rgba(255,255,255,0.025)',
-                }}
-                className="group relative overflow-hidden bg-void p-6"
-              >
-                <div className="absolute left-0 top-0 h-px w-0 bg-signal transition-all duration-700 group-hover:w-full" />
-
-                <div className="mb-8 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-signal">
-                    {phase.number}
-                  </span>
-
-                  <ArrowUpRight
-                    size={14}
-                    className="text-ash transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-signal"
-                  />
-                </div>
-
-                <h3 className="font-display text-lg text-bone">
-                  {phase.label}
-                </h3>
-
-                <p className="mt-3 font-body text-xs leading-6 text-bone-muted">
-                  {phase.text}
-                </p>
-
-                <div className="mt-6 h-px bg-void-line">
-                  <motion.div
-                    initial={{
-                      width: 0,
-                    }}
-                    whileInView={{
-                      width: '55%',
-                    }}
-                    viewport={{
-                      once: true,
-                    }}
-                    transition={{
-                      delay: index * 0.15,
-                      duration: 0.8,
-                    }}
-                    className="h-px bg-spectral-bright"
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
-
+        
         {/* ================================================================= */}
         {/* CONNECT                                                           */}
         {/* ================================================================= */}
@@ -1424,7 +1341,7 @@ export function About() {
               </p>
 
               <p className="text-spectral-bright">
-                developer@future:~$
+                developer@future:~$ Bharat Poojari
               </p>
 
               <p className="mt-3">
