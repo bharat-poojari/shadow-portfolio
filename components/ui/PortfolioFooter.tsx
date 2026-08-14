@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import {
   ArrowUp,
   ChevronRight,
@@ -55,6 +57,63 @@ export function PortfolioFooter() {
 
   const currentYear =
     new Date().getFullYear();
+
+
+  type VisitorNode = {
+    ip: string;
+    country: string;
+    cc: string;
+  };
+
+
+  const [visitorNode, setVisitorNode] =
+    useState<VisitorNode | null>(null);
+
+  const [nodeScanning, setNodeScanning] =
+    useState(true);
+
+
+  useEffect(() => {
+    let mounted = true;
+
+    const detectNode = async () => {
+      try {
+        const response = await fetch(
+  '/api/visitor-node',
+  {
+    cache: 'no-store',
+  },
+);
+
+        if (!response.ok) {
+          throw new Error(
+            'Node detection failed',
+          );
+        }
+
+        const data: VisitorNode =
+          await response.json();
+
+        if (mounted) {
+          setVisitorNode(data);
+        }
+      } catch {
+        if (mounted) {
+          setVisitorNode(null);
+        }
+      } finally {
+        if (mounted) {
+          setNodeScanning(false);
+        }
+      }
+    };
+
+    detectNode();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
 
   return (
@@ -511,7 +570,7 @@ export function PortfolioFooter() {
             border-void-line
             py-8
             sm:grid-cols-2
-            lg:grid-cols-4
+            lg:grid-cols-5
           "
         >
 
@@ -750,6 +809,372 @@ export function PortfolioFooter() {
               </div>
 
             </div>
+
+          </div>
+
+
+          {/* Shadow Scan */}
+          <div>
+
+            <p
+              className="
+                mb-4
+                font-mono
+                text-[8px]
+                tracking-[0.2em]
+                text-ash
+              "
+            >
+              SHADOW SCAN
+            </p>
+
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 8,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              className="
+                relative
+                overflow-hidden
+                border
+                border-signal/20
+                bg-signal/[0.025]
+              "
+            >
+
+              {/* Animated scan beam */}
+              {!reduceMotion && (
+                <motion.div
+                  animate={{
+                    x: ['-120%', '220%'],
+                  }}
+                  transition={{
+                    duration: 2.8,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-y-0
+                    w-1/3
+                    bg-gradient-to-r
+                    from-transparent
+                    via-signal/10
+                    to-transparent
+                    blur-md
+                  "
+                />
+              )}
+
+
+              {/* Widget header */}
+              <div
+                className="
+                  relative
+                  flex
+                  items-center
+                  justify-between
+                  border-b
+                  border-signal/10
+                  px-3
+                  py-2.5
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
+
+                  <motion.div
+                    animate={
+                      reduceMotion
+                        ? undefined
+                        : {
+                            rotate: [
+                              0,
+                              180,
+                              360,
+                            ],
+                          }
+                    }
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                    className="
+                      flex
+                      h-5
+                      w-5
+                      items-center
+                      justify-center
+                      border
+                      border-signal/30
+                      text-signal
+                    "
+                  >
+                    <Radio size={9} />
+                  </motion.div>
+
+
+                  <span
+                    className="
+                      font-mono
+                      text-[7px]
+                      tracking-[0.18em]
+                      text-signal
+                    "
+                  >
+                    NODE DETECTION
+                  </span>
+
+                </div>
+
+
+                <span
+                  className="
+                    font-mono
+                    text-[6px]
+                    tracking-[0.12em]
+                    text-ash/60
+                  "
+                >
+                  MYIP // API
+                </span>
+
+              </div>
+
+
+              {/* Detection body */}
+              <div className="relative p-3">
+
+                {nodeScanning ? (
+
+                  <div className="space-y-2">
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        font-mono
+                        text-[7px]
+                        text-signal
+                      "
+                    >
+
+                      <motion.span
+                        animate={
+                          reduceMotion
+                            ? undefined
+                            : {
+                                opacity: [
+                                  0.3,
+                                  1,
+                                  0.3,
+                                ],
+                              }
+                        }
+                        transition={{
+                          duration: 0.8,
+                          repeat: Infinity,
+                        }}
+                        className="
+                          h-1.5
+                          w-1.5
+                          rounded-full
+                          bg-signal
+                        "
+                      />
+
+                      SCANNING SHADOW...
+
+                    </div>
+
+
+                    <div
+                      className="
+                        h-1
+                        overflow-hidden
+                        bg-void-line
+                      "
+                    >
+
+                      <motion.div
+                        animate={{
+                          x: [
+                            '-100%',
+                            '100%',
+                          ],
+                        }}
+                        transition={{
+                          duration: 1.2,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                        }}
+                        className="
+                          h-full
+                          w-1/2
+                          bg-signal/70
+                        "
+                      />
+
+                    </div>
+
+                  </div>
+
+                ) : visitorNode ? (
+
+                  <div className="space-y-2.5">
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        gap-3
+                      "
+                    >
+
+                      <span
+                        className="
+                          font-mono
+                          text-[7px]
+                          text-ash
+                        "
+                      >
+                        IP SIGNATURE
+                      </span>
+
+                      <span
+                        className="
+                          font-mono
+                          text-[8px]
+                          text-bone-muted
+                        "
+                      >
+                        {visitorNode.ip}
+                      </span>
+
+                    </div>
+
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        gap-3
+                      "
+                    >
+
+                      <span
+                        className="
+                          font-mono
+                          text-[7px]
+                          text-ash
+                        "
+                      >
+                        ORIGIN
+                      </span>
+
+                      <span
+                        className="
+                          font-mono
+                          text-[8px]
+                          text-signal
+                        "
+                      >
+                        {visitorNode.country}
+                      </span>
+
+                    </div>
+
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        border-t
+                        border-void-line
+                        pt-2
+                      "
+                    >
+
+                      <span
+                        className="
+                          font-mono
+                          text-[6px]
+                          tracking-[0.12em]
+                          text-ash/60
+                        "
+                      >
+                        SHADOW NODE IDENTIFIED
+                      </span>
+
+                      <span
+                        className="
+                          border
+                          border-signal/20
+                          px-1.5
+                          py-0.5
+                          font-mono
+                          text-[6px]
+                          text-signal
+                        "
+                      >
+                        {visitorNode.cc}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                ) : (
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      gap-2
+                      font-mono
+                      text-[7px]
+                      text-ash
+                    "
+                  >
+
+                    <span
+                      className="
+                        h-1.5
+                        w-1.5
+                        rounded-full
+                        bg-ash/40
+                      "
+                    />
+
+                    SHADOW SIGNAL UNAVAILABLE
+
+                  </div>
+
+                )}
+
+              </div>
+
+            </motion.div>
 
           </div>
 
