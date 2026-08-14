@@ -14,7 +14,7 @@ import {
 import { HeroArtifacts } from './../hero/HeroArtifacts';
 
 import { profile } from '@/lib/content';
-
+import { ShadowHunterGame } from '../game/ShadowHunterGame';
 const socials = [
   {
     label: 'GitHub',
@@ -85,8 +85,10 @@ const socials = [
 
 export function Hero() {
   const [muted, setMuted] = useState(true);
-  const [videoPlaying, setVideoPlaying] = useState(true);
+const [videoPlaying, setVideoPlaying] = useState(true);
 
+const [shadowHunterOpen, setShadowHunterOpen] =
+  useState(false);
   const [hoveredSocial, setHoveredSocial] =
     useState<string | null>(null);
 
@@ -598,6 +600,269 @@ export function Hero() {
           </span>
         </button>
 
+
+
+
+      {/* =====================================================
+    SHADOW HUNTER // GAME PORTAL
+    ===================================================== */}
+
+<button
+  type="button"
+  onClick={() => setShadowHunterOpen(true)}
+  aria-label="Open Shadow Hunter game"
+  className="
+    group
+    absolute
+    right-[4.5rem]
+    top-6
+    z-40
+    flex
+    h-10
+    w-10
+    items-center
+    justify-center
+    text-bone
+    transition-all
+    duration-500
+    ease-[cubic-bezier(0.16,1,0.3,1)]
+    hover:scale-110
+    active:scale-90
+    sm:right-[7.5rem]
+    sm:top-8
+  "
+>
+  {/* Rotating outer frame */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      inset-0
+      rotate-45
+      border
+      border-[#5FC6E8]/25
+      bg-black/25
+      backdrop-blur-md
+      transition-all
+      duration-700
+      group-hover:rotate-[135deg]
+      group-hover:border-[#5FC6E8]/70
+      group-hover:bg-[#5FC6E8]/10
+    "
+    style={{
+      clipPath:
+        'polygon(50% 0%, 92% 20%, 100% 50%, 92% 80%, 50% 100%, 8% 80%, 0% 50%, 8% 20%)',
+    }}
+  />
+
+  {/* Inner hunter seal */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      inset-[5px]
+      rounded-full
+      border
+      border-[#5FC6E8]/25
+      transition-all
+      duration-500
+      group-hover:scale-75
+      group-hover:border-[#5FC6E8]/60
+    "
+  />
+
+  {/* Energy ring */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      inset-[2px]
+      rounded-full
+      border
+      border-transparent
+      border-t-[#5FC6E8]
+      border-l-[#5FC6E8]/30
+      animate-[artifactSpin_4s_linear_infinite]
+      transition-all
+      duration-500
+      group-hover:border-t-[#E4623F]
+      group-hover:border-l-[#E4623F]/30
+    "
+  />
+
+  {/* Crosshair */}
+  <span className="pointer-events-none absolute inset-0">
+    <span
+      className="
+        absolute
+        left-1/2
+        top-0
+        h-1.5
+        w-px
+        -translate-x-1/2
+        bg-[#5FC6E8]/70
+        transition-all
+        duration-300
+        group-hover:h-2
+        group-hover:bg-[#5FC6E8]
+      "
+    />
+
+    <span
+      className="
+        absolute
+        bottom-0
+        left-1/2
+        h-1.5
+        w-px
+        -translate-x-1/2
+        bg-[#5FC6E8]/70
+        transition-all
+        duration-300
+        group-hover:h-2
+        group-hover:bg-[#5FC6E8]
+      "
+    />
+
+    <span
+      className="
+        absolute
+        left-0
+        top-1/2
+        h-px
+        w-1.5
+        -translate-y-1/2
+        bg-[#5FC6E8]/70
+      "
+    />
+
+    <span
+      className="
+        absolute
+        right-0
+        top-1/2
+        h-px
+        w-1.5
+        -translate-y-1/2
+        bg-[#5FC6E8]/70
+      "
+    />
+  </span>
+
+  {/* Hunter glyph */}
+  <span
+    className="
+      relative
+      z-10
+      flex
+      h-4
+      w-4
+      items-center
+      justify-center
+      font-mono
+      text-[8px]
+      text-[#5FC6E8]
+      drop-shadow-[0_0_8px_rgba(95,198,232,0.8)]
+      transition-all
+      duration-500
+      group-hover:text-[#E4623F]
+      group-hover:drop-shadow-[0_0_12px_rgba(228,98,63,0.9)]
+    "
+  >
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 3L20 7.5V13C20 17.5 16.8 20.5 12 22C7.2 20.5 4 17.5 4 13V7.5L12 3Z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+
+      <path
+        d="M9 12.5L11 14.5L15.5 9.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </span>
+
+  {/* Micro label */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      -bottom-2
+      left-1/2
+      -translate-x-1/2
+      font-mono
+      text-[6px]
+      tracking-widest
+      text-ash/50
+      transition-all
+      duration-300
+      group-hover:text-[#5FC6E8]
+    "
+  >
+    SH
+  </span>
+
+  {/* Hover scan */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      left-1/2
+      top-1/2
+      h-px
+      w-0
+      -translate-x-1/2
+      bg-[#5FC6E8]
+      opacity-0
+      transition-all
+      duration-500
+      group-hover:w-7
+      group-hover:opacity-70
+    "
+  />
+
+  {/* Tooltip */}
+  <span
+    className="
+      pointer-events-none
+      absolute
+      right-[calc(100%+10px)]
+      top-1/2
+      -translate-y-1/2
+      translate-x-2
+      whitespace-nowrap
+      border
+      border-[#5FC6E8]/20
+      bg-black/70
+      px-2
+      py-1
+      font-mono
+      text-[7px]
+      tracking-[0.18em]
+      text-[#5FC6E8]/70
+      opacity-0
+      backdrop-blur-md
+      transition-all
+      duration-300
+      group-hover:translate-x-0
+      group-hover:opacity-100
+    "
+  >
+    ENTER // SHADOW HUNTER
+  </span>
+</button>
+
+
         {/* =====================================================
             MAIN HERO COPY
             ===================================================== */}
@@ -900,7 +1165,7 @@ export function Hero() {
 
         <a
           href="#about"
-          className="
+          className=" 
             absolute
             bottom-7
             left-1/2
@@ -930,6 +1195,11 @@ export function Hero() {
           </span>
         </a>
       </section>
+
+<ShadowHunterGame
+  open={shadowHunterOpen}
+  onClose={() => setShadowHunterOpen(false)}
+/>
 
       {/* =======================================================
           HERO ANIMATION SYSTEM
