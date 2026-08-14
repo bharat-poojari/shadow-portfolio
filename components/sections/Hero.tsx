@@ -40,7 +40,7 @@ const socials = [
   {
     label: 'LinkedIn',
     short: 'IN',
-    href: 'https://linkedin.com/in/bharat-poojari',
+    href: 'https://www.linkedin.com/in/bharat-poojari-397618359',
     path: `
       M6.94 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM3.2 8.75h3.5V21H3.2V8.75Zm6.2
       0h3.36v1.68h.05c.47-.88 1.6-1.8 3.3-1.8 3.53 0 4.18 2.32
