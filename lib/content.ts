@@ -232,11 +232,60 @@ export const achievements: string[] = [
 ];
 
 export const siteSections = [
-  { id: 'hero', num: '01', label: 'Hero', arc: 'The Awakening' },
-  { id: 'about', num: '02', label: 'About', arc: 'The Origin' },
-  { id: 'skills', num: '03', label: 'Skills', arc: 'The Codex' },
-  { id: 'projects', num: '04', label: 'Projects', arc: 'The Campaigns' },
-  { id: 'education', num: '05', label: 'Education', arc: 'The Training Arc' },
-  { id: 'certifications', num: '06', label: 'Certifications', arc: 'The Artifact Vault' },
-  { id: 'contact', num: '07', label: 'Contact', arc: 'The Next Arc' },
+  {
+    id: 'hero',
+    num: '01',
+    label: 'Hero',
+    arc: 'The Awakening',
+  },
+
+  {
+    id: 'about',
+    num: '02',
+    label: 'About',
+    arc: 'The Origin',
+  },
+
+  {
+    id: 'skills',
+    num: '03',
+    label: 'Skills',
+    arc: 'The Codex',
+  },
+
+  {
+    id: 'projects',
+    num: '04',
+    label: 'Projects',
+    arc: 'The Campaigns',
+  },
+
+  {
+    id: 'fun-zone',
+    num: '05',
+    label: 'Fun Zone',
+    shortLabel: 'FUN',
+    arc: 'The System Instances',
+  },
+
+  {
+    id: 'education',
+    num: '06',
+    label: 'Education',
+    arc: 'The Training Arc',
+  },
+
+  {
+    id: 'certifications',
+    num: '07',
+    label: 'Certifications',
+    arc: 'The Artifact Vault',
+  },
+
+  {
+    id: 'contact',
+    num: '08',
+    label: 'Contact',
+    arc: 'The Next Arc',
+  },
 ] as const;
