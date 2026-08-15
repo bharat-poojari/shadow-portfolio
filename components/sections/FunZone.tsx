@@ -9,7 +9,7 @@ import {
 
 import { ShadowHunterGame } from '../game/ShadowHunterGame';
 import NeonResonanceGame from '@/components/game/NeonResonanceGame';
-import Voidrequiemgame from '@/components/game/Voidrequiemgame';
+import { VoidRequiemGame } from '@/components/game/Voidrequiemgame';
 
 
 /* -------------------------------------------------------------------------- */
@@ -31,7 +31,8 @@ type GameRank =
 
 type GameId =
   | 'shadow-hunter'
-  | 'neon-resonance';
+  | 'neon-resonance'
+  | 'void-requiem';
 
 type GameEntry = {
   id: GameId;
@@ -102,6 +103,57 @@ const GAMES: GameEntry[] = [
       'MOUSE AIM',
       'SPACE DASH',
       'Q / E / R ABILITIES',
+    ],
+  },
+  {
+    id: 'void-requiem',
+
+    title: 'VOID//REQUIEM',
+
+    subtitle:
+      'CUT FATE // ANIME ACTION ROGUELITE',
+
+    description:
+      'Enter the Void, cut through escalating enemy encounters, master Perfect Requiems, build Style and Void, choose upgrades and face The First Death.',
+
+    status: 'AVAILABLE',
+
+    rank: 'S',
+
+    genre:
+      'ACTION / ROGUELITE',
+
+    mode:
+      'SOLO RUN',
+
+    difficulty:
+      'AWAKENED → ABYSSAL',
+
+    accent:
+      '#5DEBFF',
+
+    secondaryAccent:
+      '#8A5CFF',
+
+    version:
+      'v1.0.0',
+
+    tags: [
+      'REQUIEM',
+      'PARRY',
+      'ROGUELITE',
+      'BOSS',
+      'UPGRADES',
+      'STYLE',
+    ],
+
+    controls: [
+      'WASD / ARROWS',
+      'MOUSE AIM / CLICK',
+      'SPACE STRIKE',
+      'SHIFT DASH',
+      'R REQUIEM',
+      'F ASCENSION',
     ],
   },
   {
@@ -601,6 +653,206 @@ function ShadowHunterIllustration({
           "
         >
           SIGNAL LOCKED
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Void Requiem Illustration                                                   */
+/* -------------------------------------------------------------------------- */
+
+function VoidRequiemIllustration({
+  active,
+}: {
+  active: boolean;
+}) {
+  return (
+    <div
+      className="
+        relative
+        h-full
+        min-h-[280px]
+        overflow-hidden
+        bg-[#050509]
+      "
+    >
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-[radial-gradient(circle_at_50%_48%,rgba(93,235,255,0.13),transparent_30%),radial-gradient(circle_at_64%_52%,rgba(138,92,255,0.14),transparent_34%)]
+        "
+      />
+
+      <div
+        className="
+          absolute
+          inset-0
+          opacity-[0.16]
+          [background-image:linear-gradient(rgba(93,235,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(93,235,255,0.16)_1px,transparent_1px)]
+          [background-size:30px_30px]
+        "
+      />
+
+      <div className="absolute left-4 top-4 font-mono text-[8px] tracking-[0.22em] text-[#5DEBFF]/50">
+        VOID INSTANCE // 01
+      </div>
+
+      <div className="absolute right-4 top-4 font-mono text-[8px] tracking-[0.18em] text-[#8A5CFF]/50">
+        FATE SIGNAL: CUT
+      </div>
+
+      <div
+        className={`
+          absolute
+          left-1/2
+          top-[46%]
+          h-44
+          w-44
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          border
+          border-[#5DEBFF]/20
+          shadow-[0_0_70px_rgba(93,235,255,0.08)]
+          ${active ? 'animate-[spin_7s_linear_infinite]' : 'animate-[spin_18s_linear_infinite]'}
+        `}
+      />
+
+      <div
+        className="
+          absolute
+          left-1/2
+          top-[46%]
+          h-32
+          w-32
+          -translate-x-1/2
+          -translate-y-1/2
+          rotate-45
+          border
+          border-dashed
+          border-[#8A5CFF]/30
+        "
+      />
+
+      <div
+        className={`
+          absolute
+          left-1/2
+          top-[46%]
+          h-28
+          w-20
+          -translate-x-1/2
+          -translate-y-1/2
+          border
+          border-[#253242]
+          bg-gradient-to-b
+          from-[#141d29]
+          via-[#080c13]
+          to-[#030508]
+          shadow-[0_0_45px_rgba(93,235,255,0.08)]
+          transition-transform
+          duration-500
+          ${active ? 'scale-105' : 'scale-100'}
+        `}
+        style={{
+          clipPath: 'polygon(50% 0%, 86% 16%, 100% 72%, 72% 100%, 28% 100%, 0% 72%, 14% 16%)',
+        }}
+      />
+
+      <div
+        className="
+          absolute
+          left-1/2
+          top-[40%]
+          h-16
+          w-16
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          border
+          border-[#5DEBFF]/35
+          bg-[#080c13]
+        "
+      />
+
+      <div
+        className="
+          absolute
+          left-1/2
+          top-[40%]
+          h-2
+          w-12
+          -translate-x-1/2
+          skew-x-[-18deg]
+          bg-[#5DEBFF]
+          shadow-[0_0_16px_rgba(93,235,255,0.95)]
+        "
+      />
+
+      <div
+        className="
+          absolute
+          left-[58%]
+          top-[44%]
+          h-1.5
+          w-24
+          rotate-[-24deg]
+          origin-left
+          bg-gradient-to-r
+          from-[#5DEBFF]
+          via-white
+          to-transparent
+          shadow-[0_0_14px_rgba(93,235,255,0.9)]
+        "
+      />
+
+      <div
+        className="
+          absolute
+          left-1/2
+          top-[54%]
+          h-4
+          w-4
+          -translate-x-1/2
+          rotate-45
+          bg-[#8A5CFF]
+          shadow-[0_0_24px_rgba(138,92,255,1)]
+        "
+      />
+
+      {[
+        { left: '24%', top: active ? '34%' : '42%', rotate: '18deg' },
+        { left: '72%', top: active ? '30%' : '22%', rotate: '-20deg' },
+        { left: '79%', top: active ? '65%' : '58%', rotate: '45deg' },
+        { left: '18%', top: active ? '68%' : '61%', rotate: '-45deg' },
+      ].map((fragment, index) => (
+        <span
+          key={index}
+          className="absolute h-2.5 w-2.5 border border-[#5DEBFF]/60 bg-[#5DEBFF]/10 shadow-[0_0_12px_rgba(93,235,255,0.55)]"
+          style={{
+            left: fragment.left,
+            top: fragment.top,
+            transform: `rotate(${fragment.rotate})`,
+          }}
+        />
+      ))}
+
+      <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+        <div>
+          <div className="font-mono text-[8px] tracking-[0.22em] text-[#5DEBFF]/45">
+            REQUIEM SIGNATURE
+          </div>
+          <div className="mt-1 font-mono text-[10px] tracking-[0.14em] text-bone/70">
+            VOID / STEEL / FATE
+          </div>
+        </div>
+
+        <div className="font-mono text-[8px] tracking-[0.18em] text-[#8A5CFF]/45">
+          CUT READY
         </div>
       </div>
     </div>
@@ -1338,6 +1590,13 @@ export function FunZone() {
                             isHovered
                           }
                         />
+                      ) : game.id ===
+                        'void-requiem' ? (
+                        <VoidRequiemIllustration
+                          active={
+                            isHovered
+                          }
+                        />
                       ) : (
                         <NeonResonanceIllustration
                           active={
@@ -1952,6 +2211,128 @@ export function FunZone() {
                 open={
                   activeGame ===
                   'shadow-hunter'
+                }
+                onClose={
+                  closeGame
+                }
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedGame?.id ===
+        'void-requiem' && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[300]
+            flex
+            items-center
+            justify-center
+            bg-[#02030a]/90
+            p-2
+            backdrop-blur-xl
+            sm:p-4
+            lg:p-6
+          "
+          role="dialog"
+          aria-modal="true"
+          aria-label="Void Requiem game"
+        >
+          <div
+            className="
+              relative
+              h-full
+              max-h-[940px]
+              w-full
+              max-w-[1400px]
+              overflow-hidden
+              border
+              border-[#5DEBFF]/25
+              bg-[#050509]
+              shadow-[0_0_100px_rgba(0,0,0,0.85),0_0_55px_rgba(93,235,255,0.07)]
+            "
+          >
+            <div
+              className="
+                absolute
+                left-0
+                right-0
+                top-0
+                z-[20]
+                flex
+                h-8
+                items-center
+                justify-between
+                border-b
+                border-white/[0.06]
+                bg-black/60
+                px-3
+                backdrop-blur-md
+              "
+            >
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  font-mono
+                  text-[7px]
+                  tracking-[0.18em]
+                  text-[#5DEBFF]/65
+                "
+              >
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    animate-pulse
+                    rounded-full
+                    bg-[#5DEBFF]
+                    shadow-[0_0_8px_rgba(93,235,255,1)]
+                  "
+                />
+
+                SYSTEM INSTANCE
+
+                <span className="text-bone/20">
+                  //
+                </span>
+
+                VOID//REQUIEM
+              </div>
+
+              <button
+                type="button"
+                onClick={
+                  closeGame
+                }
+                className="
+                  font-mono
+                  text-[8px]
+                  tracking-[0.16em]
+                  text-bone/40
+                  transition-colors
+                  hover:text-[#5DEBFF]
+                "
+              >
+                ESC // CLOSE
+              </button>
+            </div>
+
+            <div
+              className="
+                h-full
+                w-full
+                pt-8
+              "
+            >
+              <VoidRequiemGame
+                open={
+                  activeGame ===
+                  'void-requiem'
                 }
                 onClose={
                   closeGame

@@ -1156,6 +1156,50 @@ export function ShadowHunterGame({
       null,
     );
 
+  /*
+   * CC0 SFX sources:
+   * - MoxieCat — 8-bit Platformer SFX
+   * - FrogPog — Chiptune SFX Pack
+   *
+   * Audio files are played with HTMLAudioElement. This keeps the game
+   * compatible with remote WAV assets without requiring AudioBuffer/CORS
+   * decoding.
+   */
+  const sfxAudioRef = useRef<
+    Record<string, HTMLAudioElement[]>
+  >({});
+  const sfxIndexRef = useRef<
+    Record<string, number>
+  >({});
+  const sfxLastPlayedRef = useRef<
+    Record<string, number>
+  >({});
+
+  const SFX_URLS: Record<string, string> = {
+    ui:
+      'https://opengameart.org/sites/default/files/button.wav',
+    attack:
+      'https://opengameart.org/sites/default/files/dashwoosh.wav',
+    critical:
+      'https://opengameart.org/sites/default/files/lightningstrike.wav',
+    dash:
+      'https://opengameart.org/sites/default/files/dashwoosh.wav',
+    ability:
+      'https://opengameart.org/sites/default/files/lightningstrike.wav',
+    pickup:
+      'https://opengameart.org/sites/default/files/pick_up.wav',
+    hurt:
+      'https://opengameart.org/sites/default/files/playerhurt.wav',
+    level:
+      'https://opengameart.org/sites/default/files/level_up.wav',
+    victory:
+      'https://opengameart.org/sites/default/files/level_passed.wav',
+    defeat:
+      'https://opengameart.org/sites/default/files/game_over.wav',
+    fail:
+      'https://opengameart.org/sites/default/files/fail.wav',
+  };
+
   const hitStopRef =
     useRef(false);
 
@@ -1306,6 +1350,115 @@ export function ShadowHunterGame({
     );
   }, [open]);
 
+  useEffect(() => {
+    if (!open || !soundEnabled) {
+      return;
+    }
+
+    Object.entries(SFX_URLS).forEach(
+      ([name, url]) => {
+        if (sfxAudioRef.current[name]) {
+          return;
+        }
+
+        sfxAudioRef.current[name] =
+          Array.from(
+            { length: 3 },
+            () => {
+              const audio = new Audio(url);
+              audio.preload = 'auto';
+              audio.volume = 0.72;
+              audio.setAttribute(
+                'playsinline',
+                'true',
+              );
+              return audio;
+            },
+          );
+
+        sfxIndexRef.current[name] = 0;
+      },
+    );
+  }, [open, soundEnabled]);
+
+  const playSfx = useCallback(
+    (
+      name: string,
+      volume = 0.72,
+      cooldown = 0.045,
+    ) => {
+      if (!soundEnabled) {
+        return;
+      }
+
+      const url = SFX_URLS[name];
+
+      if (!url) {
+        return;
+      }
+
+      try {
+        const now = performance.now();
+        const last =
+          sfxLastPlayedRef.current[name] || 0;
+
+        if (
+          now - last <
+          cooldown * 1000
+        ) {
+          return;
+        }
+
+        sfxLastPlayedRef.current[name] =
+          now;
+
+        let pool =
+          sfxAudioRef.current[name];
+
+        if (!pool) {
+          pool = Array.from(
+            { length: 3 },
+            () => {
+              const audio = new Audio(url);
+              audio.preload = 'auto';
+              audio.volume = volume;
+              audio.setAttribute(
+                'playsinline',
+                'true',
+              );
+              return audio;
+            },
+          );
+
+          sfxAudioRef.current[name] = pool;
+          sfxIndexRef.current[name] = 0;
+        }
+
+        const index =
+          sfxIndexRef.current[name] %
+          pool.length;
+
+        const audio = pool[index];
+
+        sfxIndexRef.current[name] =
+          index + 1;
+
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = clamp(volume, 0, 1);
+
+        void audio.play().catch(
+          () => {
+            // Browser autoplay/network failures are non-fatal.
+          },
+        );
+      } catch {
+        // SFX are optional and must never interrupt gameplay.
+      }
+    },
+    [soundEnabled],
+  );
+
   const playSound = useCallback(
     (
       frequency: number,
@@ -1317,6 +1470,10 @@ export function ShadowHunterGame({
         return;
       }
 
+      /*
+       * Keep the original synthesized tone as a fallback, so the game
+       * remains audible even if an external CC0 WAV is unavailable.
+       */
       try {
         const AudioContextClass =
           window.AudioContext ||
@@ -1327,26 +1484,15 @@ export function ShadowHunterGame({
           )
             .webkitAudioContext;
 
-        if (
-          !AudioContextClass
-        ) {
-          return;
-        }
-
-        if (
-          !audioRef.current
-        ) {
+        if (AudioContextClass) {
+        if (!audioRef.current) {
           audioRef.current =
             new AudioContextClass();
         }
 
-        const audio =
-          audioRef.current;
+        const audio = audioRef.current;
 
-        if (
-          audio.state ===
-          'suspended'
-        ) {
+        if (audio.state === 'suspended') {
           void audio.resume();
         }
 
@@ -1356,8 +1502,7 @@ export function ShadowHunterGame({
         const gain =
           audio.createGain();
 
-        oscillator.type =
-          type;
+        oscillator.type = type;
 
         oscillator.frequency.setValueAtTime(
           frequency,
@@ -1371,29 +1516,49 @@ export function ShadowHunterGame({
 
         gain.gain.exponentialRampToValueAtTime(
           0.0001,
-          audio.currentTime +
-            duration,
+          audio.currentTime + duration,
         );
 
-        oscillator.connect(
-          gain,
-        );
-
-        gain.connect(
-          audio.destination,
-        );
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
 
         oscillator.start();
 
         oscillator.stop(
-          audio.currentTime +
-            duration,
+          audio.currentTime + duration,
         );
+        }
       } catch {
-        // Audio is optional.
+        // Synth fallback is optional.
+      }
+
+      /*
+       * Existing playSound calls are intentionally preserved. Their
+       * frequency signatures select an appropriate CC0 SFX automatically.
+       */
+      if (frequency >= 940) {
+        playSfx('level', 0.55, 0.08);
+      } else if (frequency >= 850) {
+        playSfx('victory', 0.58, 0.12);
+      } else if (frequency >= 700) {
+        playSfx('critical', 0.34, 0.045);
+      } else if (frequency >= 580) {
+        playSfx('pickup', 0.48, 0.055);
+      } else if (frequency >= 500) {
+        playSfx('ui', 0.38, 0.05);
+      } else if (frequency >= 400) {
+        playSfx('attack', 0.24, 0.035);
+      } else if (frequency >= 250) {
+        playSfx('ability', 0.32, 0.08);
+      } else if (frequency >= 150) {
+        playSfx('dash', 0.38, 0.08);
+      } else if (frequency <= 95) {
+        playSfx('defeat', 0.48, 0.18);
+      } else {
+        playSfx('hurt', 0.32, 0.06);
       }
     },
-    [soundEnabled],
+    [playSfx, soundEnabled],
   );
 
   const syncHud =
@@ -5476,6 +5641,31 @@ export function ShadowHunterGame({
       ? hud.xp /
         hud.xpToNext
       : 0;
+
+  useEffect(() => {
+    return () => {
+      Object.values(
+        sfxAudioRef.current,
+      ).forEach((pool) => {
+        pool.forEach((audio) => {
+          audio.pause();
+          audio.src = '';
+        });
+      });
+
+      sfxAudioRef.current = {};
+      sfxIndexRef.current = {};
+      sfxLastPlayedRef.current = {};
+
+      if (audioRef.current) {
+        void audioRef.current
+          .close()
+          .catch(() => undefined);
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
 
   return (
     <div
