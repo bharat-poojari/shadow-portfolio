@@ -9,6 +9,8 @@ import {
 
 import { ShadowHunterGame } from '../game/ShadowHunterGame';
 import NeonResonanceGame from '@/components/game/NeonResonanceGame';
+import Voidrequiemgame from '@/components/game/Voidrequiemgame';
+
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
