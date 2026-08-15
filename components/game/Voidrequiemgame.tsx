@@ -185,6 +185,7 @@ type GameState = {
   damageTaken: number;
   hitsTaken: number;
   noDamageEncounter: boolean;
+  nullDamageTaken: boolean;
   elapsed: number;
   timeSinceHit: number;
 
@@ -237,6 +238,8 @@ type GameState = {
   requiemRadiusMultiplier: number;
   attackSpeedMultiplier: number;
   dashCooldownMultiplier: number;
+  staminaRegenMultiplier: number;
+  strikeArcMultiplier: number;
   maxHpBonus: number;
   lowHpDamageBonus: boolean;
   phantomStepEnabled: boolean;
@@ -334,7 +337,7 @@ const DIFFICULTIES: Record<
 
 const UPGRADE_DATA: Record<UpgradeId, { name: string; description: string; icon: string }> = {
   blackEdge: { name: 'BLACK EDGE', description: '+18% Strike damage.', icon: '⟠' },
-  phantomStep: { name: 'PHANTOM STEP', description: 'Perfect Dash leaves a cutting afterimage.', icon: '⇢' },
+  phantomStep: { name: 'PHANTOM STEP', description: 'Dash leaves a cutting afterimage.', icon: '⇢' },
   fracturedFate: { name: 'FRACTURED FATE', description: 'Requiem cuts a wider arc of attacks.', icon: '✦' },
   voidHunger: { name: 'VOID HUNGER', description: '+25% Void gained from all sources.', icon: '◎' },
   bloodEdge: { name: 'BLOOD EDGE', description: 'Below 35% HP: +45% damage, +20% speed.', icon: '❖' },
@@ -427,6 +430,7 @@ function createInitialState(): GameState {
     damageTaken: 0,
     hitsTaken: 0,
     noDamageEncounter: true,
+    nullDamageTaken: false,
     elapsed: 0,
     timeSinceHit: 0,
 
@@ -497,6 +501,8 @@ function createInitialState(): GameState {
     requiemRadiusMultiplier: 1,
     attackSpeedMultiplier: 1,
     dashCooldownMultiplier: 1,
+    staminaRegenMultiplier: 1,
+    strikeArcMultiplier: 1,
     maxHpBonus: 0,
     lowHpDamageBonus: false,
     phantomStepEnabled: false,
@@ -754,6 +760,9 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
   const [particlesEnabled, setParticlesEnabled] = useState(true);
   const [damageNumbersEnabled, setDamageNumbersEnabled] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const hudSyncTimerRef = useRef(0);
+  const touchDirectionRef = useRef({ x: 0, y: 0 });
+  const touchPointerIdRef = useRef<number | null>(null);
 
   const updateSave = useCallback((updater: (c: PersistentSave) => PersistentSave) => {
     const current = saveRef.current || loadSave();
@@ -954,6 +963,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         case 'fracturedFate':
           state.fracturedFateEnabled = true;
           state.requiemRadiusMultiplier *= 1.5;
+          state.strikeArcMultiplier *= 1.22;
           break;
         case 'voidHunger':
           state.voidGainMultiplier *= 1.25;
@@ -977,6 +987,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
           break;
         case 'secondWind':
           state.dashCooldownMultiplier *= 0.8;
+          state.staminaRegenMultiplier *= 1.35;
           break;
       }
       state.upgradeChoices = [];
@@ -1030,7 +1041,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
       gainStyle(state, 2 + styleBonus);
       state.enemiesRemainingInEncounter -= 1;
 
-      if (enemy.type === 'null' && state.hitsTaken === 0) {
+      if (enemy.type === 'null' && !state.nullDamageTaken) {
         unlockAchievement('null_slain');
       }
 
@@ -1087,7 +1098,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         const d = distance(state.playerX, state.playerY, enemy.x, enemy.y);
         if (d > baseRange + enemy.radius) continue;
         const enemyAngle = Math.atan2(enemy.y - state.playerY, enemy.x - state.playerX);
-        if (Math.abs(angleDiff(enemyAngle, angle)) > 0.85) continue;
+        if (Math.abs(angleDiff(enemyAngle, angle)) > 0.85 * state.strikeArcMultiplier) continue;
 
         const crit = Math.random() < 0.12;
         const damage = 16 * state.damageMultiplier * lowHpBonus * ascendBonus * (crit ? 1.8 : 1);
@@ -1108,7 +1119,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         const d = distance(state.playerX, state.playerY, boss.x, boss.y);
         if (d <= baseRange + boss.radius) {
           const bossAngle = Math.atan2(boss.y - state.playerY, boss.x - state.playerX);
-          if (Math.abs(angleDiff(bossAngle, angle)) <= 0.85) {
+          if (Math.abs(angleDiff(bossAngle, angle)) <= 0.85 * state.strikeArcMultiplier) {
             const crit = Math.random() < 0.12;
             const damage = 14 * state.damageMultiplier * lowHpBonus * ascendBonus * (crit ? 1.8 : 1);
             boss.hp -= damage;
@@ -1397,6 +1408,24 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
     [sfx, syncHud, unlockAchievement, updateSave],
   );
 
+  const closeGame = useCallback(() => {
+    stateRef.current.running = false;
+    keysRef.current.clear();
+    touchDirectionRef.current = { x: 0, y: 0 };
+    touchPointerIdRef.current = null;
+    setScreen('menu');
+    setUpgradeChoices([]);
+    setAchievementToast(null);
+    stateRef.current = createInitialState();
+    hudSyncTimerRef.current = 0;
+    if (audioRef.current) {
+      void audioRef.current.close().catch(() => undefined);
+      audioRef.current = null;
+    }
+    syncHud();
+    onClose();
+  }, [onClose, syncHud]);
+
   const restartGame = useCallback(() => startGame(), [startGame]);
 
   /* ---------------------------------- Input ---------------------------------- */
@@ -1422,13 +1451,22 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
     };
 
     const onKeyUp = (event: KeyboardEvent) => keysRef.current.delete(event.key.toLowerCase());
+    const clearInput = () => {
+      keysRef.current.clear();
+      touchDirectionRef.current = { x: 0, y: 0 };
+      touchPointerIdRef.current = null;
+    };
 
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', clearInput);
+    document.addEventListener('visibilitychange', clearInput);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
-      keysRef.current.clear();
+      window.removeEventListener('blur', clearInput);
+      document.removeEventListener('visibilitychange', clearInput);
+      clearInput();
     };
   }, [dash, open, pauseGame, performRequiem, performStrike, resumeGame, screen, triggerAscension]);
 
@@ -1446,6 +1484,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
     (state: GameState, delta: number) => {
       state.elapsed += delta;
       state.timeSinceHit += delta;
+      hudSyncTimerRef.current += delta;
 
       state.strikeTimer = Math.max(0, state.strikeTimer - delta);
       state.strikeProgress = Math.max(0, state.strikeProgress - delta * 4.2);
@@ -1462,7 +1501,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         state.style = Math.max(0, state.style - delta * 6);
       }
 
-      state.stamina = clamp(state.stamina + 26 * delta, 0, state.maxStamina);
+      state.stamina = clamp(state.stamina + 26 * state.staminaRegenMultiplier * delta, 0, state.maxStamina);
 
       if (state.comboTimer <= 0) state.combo = 0;
 
@@ -1486,6 +1525,10 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
       if (keys.has('s') || keys.has('arrowdown')) moveY += 1;
       if (keys.has('a') || keys.has('arrowleft')) moveX -= 1;
       if (keys.has('d') || keys.has('arrowright')) moveX += 1;
+      if (moveX === 0 && moveY === 0) {
+        moveX = touchDirectionRef.current.x;
+        moveY = touchDirectionRef.current.y;
+      }
       if (moveX !== 0 || moveY !== 0) {
         const mag = Math.hypot(moveX, moveY) || 1;
         moveX /= mag;
@@ -1558,7 +1601,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
           enemy.stateTimer -= delta * eScale;
           if (!enemy.parried && enemy.stateTimer > 0.02 && enemy.stateTimer < 0.16) {
             if (enemy.type === 'oracle') {
-              state.projectiles.push({
+              if (state.projectiles.length < 18) state.projectiles.push({
                 id: state.nextProjectileId++,
                 x: enemy.x,
                 y: enemy.y,
@@ -1578,6 +1621,8 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
               state.hp = clamp(state.hp - dmg, 0, state.maxHp);
               state.damageTaken += dmg;
               state.hitsTaken += 1;
+              // This is the boss attack branch; there is no `enemy` variable in scope here.
+              // `nullDamageTaken` is reserved for damage received from NULL enemies.
               state.noDamageEncounter = false;
               state.combo = 0;
               state.comboTimer = 0;
@@ -1702,8 +1747,9 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
           boss.stateTimer -= delta * bScale;
           if (boss.stateTimer > 0.02 && boss.stateTimer < 0.18) {
             if (boss.phase === 2 && Math.random() < 0.5) {
-              for (let a = -1; a <= 1; a += 1) {
-                state.projectiles.push({
+              if (state.projectiles.length < 18) {
+                for (let a = -1; a <= 1; a += 1) {
+                  state.projectiles.push({
                   id: state.nextProjectileId++,
                   x: boss.x,
                   y: boss.y,
@@ -1716,25 +1762,48 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
                   color: PALETTE.danger,
                   cuttable: true,
                   cutFlash: 0,
-                });
+                  });
+                }
               }
-            } else if (d < boss.radius + state.playerRadius + 60 && state.invulnTimer <= 0) {
-              const dmg = 24 * DIFFICULTIES[difficulty].dmgMult;
-              state.hp = clamp(state.hp - dmg, 0, state.maxHp);
-              state.damageTaken += dmg;
-              state.hitsTaken += 1;
-              state.combo = 0;
-              state.invulnTimer = 0.32;
-              state.timeSinceHit = 0;
-              state.screenShake = screenShakeEnabled ? 12 : 0;
-              spawnParticles(state, state.playerX, state.playerY, PALETTE.danger, 16, particlesEnabled);
-              sfx.hit();
-              if (state.hp <= 0) {
-                finishGame(false);
-                return;
-              }
-            }
-            boss.stateTimer = 0;
+              boss.stateTimer = 0;
+            } else if (
+  d < boss.radius + state.playerRadius + 60 &&
+  state.invulnTimer <= 0
+) {
+  const dmg =
+    24 * DIFFICULTIES[difficulty].dmgMult;
+
+  state.hp = clamp(
+    state.hp - dmg,
+    0,
+    state.maxHp,
+  );
+
+  state.damageTaken += dmg;
+  state.hitsTaken += 1;
+  state.combo = 0;
+  state.invulnTimer = 0.32;
+  state.timeSinceHit = 0;
+  state.screenShake = screenShakeEnabled ? 12 : 0;
+
+  spawnParticles(
+    state,
+    state.playerX,
+    state.playerY,
+    PALETTE.danger,
+    16,
+    particlesEnabled,
+  );
+
+  sfx.hit();
+
+  if (state.hp <= 0) {
+    finishGame(false);
+    return;
+  }
+}
+
+boss.stateTimer = 0;
           }
           if (boss.stateTimer <= 0) {
             boss.state = 'recover';
@@ -1798,7 +1867,10 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         if (slash.life <= 0) state.slashes.splice(i, 1);
       }
 
-      syncHud();
+      if (hudSyncTimerRef.current >= 0.08) {
+        hudSyncTimerRef.current = 0;
+        syncHud();
+      }
     },
     [damageNumbersEnabled, difficulty, finishGame, gainStyle, gainVoid, particlesEnabled, screenShakeEnabled, sfx, syncHud],
   );
@@ -2100,7 +2172,8 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         ctx.shadowBlur = 20;
         ctx.lineWidth = 6;
         ctx.beginPath();
-        ctx.arc(state.playerX, state.playerY, 68, state.strikeAngle - 0.85, state.strikeAngle + 0.85);
+        const strikeArc = 0.85 * state.strikeArcMultiplier;
+         ctx.arc(state.playerX, state.playerY, 68, state.strikeAngle - strikeArc, state.strikeAngle + strikeArc);
         ctx.stroke();
         ctx.restore();
       }
@@ -2204,7 +2277,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
     };
@@ -2243,21 +2316,74 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
       observer.disconnect();
       if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
     };
-  }, [drawGame, open, updateGame]);
+  }, [drawGame, open, screen, updateGame]);
+
+  const getPointerAngle = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * WORLD_WIDTH;
+    const y = ((event.clientY - rect.top) / rect.height) * WORLD_HEIGHT;
+    const state = stateRef.current;
+    return Math.atan2(y - state.playerY, x - state.playerX);
+  }, []);
 
   const handleCanvasPointer = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
-      const canvas = canvasRef.current;
-      if (!canvas || screen !== 'game') return;
-      const rect = canvas.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * WORLD_WIDTH;
-      const y = ((event.clientY - rect.top) / rect.height) * WORLD_HEIGHT;
-      const state = stateRef.current;
-      const angle = Math.atan2(y - state.playerY, x - state.playerX);
-      performStrike(angle);
+      if (screen !== 'game') return;
+      const angle = getPointerAngle(event);
+      if (angle !== null) performStrike(angle);
     },
-    [performStrike, screen],
+    [getPointerAngle, performStrike, screen],
   );
+
+  const handleCanvasPointerMove = useCallback(
+    (event: React.PointerEvent<HTMLCanvasElement>) => {
+      if (screen !== 'game') return;
+      const angle = getPointerAngle(event);
+      if (angle !== null) stateRef.current.strikeAngle = angle;
+    },
+    [getPointerAngle, screen],
+  );
+
+  const handleTouchJoystickStart = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (screen !== 'game') return;
+    touchPointerIdRef.current = event.pointerId;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const rect = event.currentTarget.getBoundingClientRect();
+    const update = (clientX: number, clientY: number) => {
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
+      const radius = Math.max(1, Math.min(rect.width, rect.height) * 0.38);
+      const length = Math.hypot(dx, dy) || 1;
+      const scale = Math.min(1, radius / length);
+      touchDirectionRef.current = { x: (dx * scale) / radius, y: (dy * scale) / radius };
+      if (Math.hypot(dx, dy) > 6) stateRef.current.strikeAngle = Math.atan2(dy, dx);
+    };
+    update(event.clientX, event.clientY);
+  }, [screen]);
+
+  const handleTouchJoystickMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (touchPointerIdRef.current !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = event.clientX - cx;
+    const dy = event.clientY - cy;
+    const radius = Math.max(1, Math.min(rect.width, rect.height) * 0.38);
+    const length = Math.hypot(dx, dy) || 1;
+    const scale = Math.min(1, radius / length);
+    touchDirectionRef.current = { x: (dx * scale) / radius, y: (dy * scale) / radius };
+    if (Math.hypot(dx, dy) > 6) stateRef.current.strikeAngle = Math.atan2(dy, dx);
+  }, []);
+
+  const handleTouchJoystickEnd = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (touchPointerIdRef.current !== event.pointerId) return;
+    touchDirectionRef.current = { x: 0, y: 0 };
+    touchPointerIdRef.current = null;
+  }, []);
 
   const toggleSetting = useCallback(
     (setting: 'sound' | 'screenShake' | 'particles' | 'damageNumbers' | 'reducedMotion') => {
@@ -2440,28 +2566,26 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
               )}
 
               {/* Touch controls */}
-              <div className="absolute bottom-4 right-4 flex gap-2 sm:hidden">
-                <button
-                  type="button"
-                  onClick={() => performStrike()}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-[#5DEBFF]/50 bg-black/65 font-mono text-[8px] text-[#5DEBFF] backdrop-blur-md"
+              <div className="absolute bottom-3 left-3 flex items-end gap-2 sm:hidden">
+                <div
+                  onPointerDown={handleTouchJoystickStart}
+                  onPointerMove={handleTouchJoystickMove}
+                  onPointerUp={handleTouchJoystickEnd}
+                  onPointerCancel={handleTouchJoystickEnd}
+                  className="relative flex h-20 w-20 touch-none select-none items-center justify-center rounded-full border border-white/15 bg-black/45 backdrop-blur-md"
+                  aria-label="Movement joystick"
                 >
-                  CUT
-                </button>
-                <button
-                  type="button"
-                  onClick={dash}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-[#5DEBFF]/50 bg-black/65 font-mono text-[8px] text-[#5DEBFF] backdrop-blur-md"
-                >
-                  DASH
-                </button>
-                <button
-                  type="button"
-                  onClick={performRequiem}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-[#FF365C]/50 bg-black/65 font-mono text-[8px] text-[#FF365C] backdrop-blur-md"
-                >
-                  R
-                </button>
+                  <div className="h-9 w-9 rounded-full border border-[#5DEBFF]/45 bg-[#5DEBFF]/10 shadow-[0_0_18px_rgba(93,235,255,0.12)]" />
+                </div>
+              </div>
+
+              <div className="absolute bottom-3 right-3 flex items-end gap-1.5 sm:hidden">
+                <button type="button" onClick={() => performStrike()} className="flex h-12 w-12 items-center justify-center rounded-full border border-[#5DEBFF]/50 bg-black/65 font-mono text-[8px] text-[#5DEBFF] backdrop-blur-md active:scale-95">CUT</button>
+                <button type="button" onClick={dash} disabled={hud.stamina < 22} className="flex h-12 w-12 items-center justify-center rounded-full border border-[#5DEBFF]/50 bg-black/65 font-mono text-[8px] text-[#5DEBFF] backdrop-blur-md disabled:opacity-30 active:scale-95">DASH</button>
+                <button type="button" onClick={performRequiem} disabled={!hud.requiemReady} className="flex h-12 w-12 items-center justify-center rounded-full border border-[#FF365C]/50 bg-black/65 font-mono text-[8px] text-[#FF365C] backdrop-blur-md disabled:opacity-30 active:scale-95">R</button>
+                {hud.voidMeter >= hud.maxVoid && !hud.ascended && (
+                  <button type="button" onClick={triggerAscension} className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/10 font-mono text-[8px] text-white backdrop-blur-md active:scale-95">F</button>
+                )}
               </div>
             </div>
           )}
@@ -2611,7 +2735,7 @@ function GameButton({ children, onClick, secondary = false }: { children: React.
 
 function OverlayScreen({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-h-[500px] items-center justify-center bg-[#060609] p-6">
+    <div className="flex min-h-[420px] items-center justify-center bg-[#060609] p-6">
       <div className="w-full max-w-3xl text-center">
         <div className="font-mono text-[8px] tracking-[0.4em] text-[#5DEBFF]">{eyebrow}</div>
         <h2 className="mt-3 font-display text-5xl text-white sm:text-6xl">{title}</h2>
@@ -2892,6 +3016,7 @@ function HowToScreen({ onBack }: { onBack: () => void }) {
     ['SHIFT', 'DASH'],
     ['R', 'REQUIEM — CUT AN INCOMING ATTACK'],
     ['F', 'VOID ASCENSION (WHEN METER IS FULL)'],
+    ['F / ASCEND BUTTON', 'VOID ASCENSION'],
     ['ESC', 'PAUSE'],
   ];
 

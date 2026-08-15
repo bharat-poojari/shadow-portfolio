@@ -9,7 +9,6 @@ import {
 
 import { ShadowHunterGame } from '../game/ShadowHunterGame';
 import NeonResonanceGame from '@/components/game/NeonResonanceGame';
-import { VoidRequiemGame } from '@/components/game/Voidrequiemgame';
 
 
 /* -------------------------------------------------------------------------- */
@@ -2329,15 +2328,7 @@ export function FunZone() {
                 pt-8
               "
             >
-              <VoidRequiemGame
-                open={
-                  activeGame ===
-                  'void-requiem'
-                }
-                onClose={
-                  closeGame
-                }
-              />
+              
             </div>
           </div>
         </div>

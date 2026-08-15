@@ -110,7 +110,7 @@ function FirstVisitPortal() {
   const [entered, setEntered] = useState(false);
 
   const [progress, setProgress] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(3);
+  const [secondsLeft, setSecondsLeft] = useState(10);
 
   const [portalData, setPortalData] = useState<PortalData>({
     ip: 'SCANNING...',
@@ -218,7 +218,7 @@ function FirstVisitPortal() {
      * coarse interval.
      */
     const startTime = performance.now();
-    const duration = 3000;
+    const duration = 10000;
 
     let animationFrame = 0;
 

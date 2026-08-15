@@ -5614,6 +5614,30 @@ export function ShadowHunterGame({
       ],
     );
 
+  useEffect(() => {
+    return () => {
+      Object.values(
+        sfxAudioRef.current,
+      ).forEach((pool) => {
+        pool.forEach((audio) => {
+          audio.pause();
+          audio.src = '';
+        });
+      });
+
+      sfxAudioRef.current = {};
+      sfxIndexRef.current = {};
+      sfxLastPlayedRef.current = {};
+
+      if (audioRef.current) {
+        void audioRef.current
+          .close()
+          .catch(() => undefined);
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
   if (!open) {
     return null;
   }
@@ -5641,30 +5665,6 @@ export function ShadowHunterGame({
       ? hud.xp /
         hud.xpToNext
       : 0;
-
-  useEffect(() => {
-    return () => {
-      Object.values(
-        sfxAudioRef.current,
-      ).forEach((pool) => {
-        pool.forEach((audio) => {
-          audio.pause();
-          audio.src = '';
-        });
-      });
-
-      sfxAudioRef.current = {};
-      sfxIndexRef.current = {};
-      sfxLastPlayedRef.current = {};
-
-      if (audioRef.current) {
-        void audioRef.current
-          .close()
-          .catch(() => undefined);
-        audioRef.current = null;
-      }
-    };
-  }, []);
 
 
   return (
