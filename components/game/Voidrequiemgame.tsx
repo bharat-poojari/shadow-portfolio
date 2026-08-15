@@ -721,6 +721,25 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
   const lastFrameRef = useRef(0);
   const audioRef = useRef<AudioContext | null>(null);
 
+  // CC0 SFX from OpenGameArt's MoxieCat 8-bit Platformer SFX pack.
+  // External audio is optional; synthesized tones remain the fallback.
+  const sfxAudioRef = useRef<Record<string, HTMLAudioElement[]>>({});
+  const sfxIndexRef = useRef<Record<string, number>>({});
+  const sfxLastPlayedRef = useRef<Record<string, number>>({});
+  const SFX_URLS: Record<string, string> = {
+    ui: 'https://opengameart.org/sites/default/files/button.wav',
+    attack: 'https://opengameart.org/sites/default/files/dashwoosh.wav',
+    critical: 'https://opengameart.org/sites/default/files/lightningstrike.wav',
+    dash: 'https://opengameart.org/sites/default/files/dashwoosh.wav',
+    ability: 'https://opengameart.org/sites/default/files/lightningstrike.wav',
+    pickup: 'https://opengameart.org/sites/default/files/pick_up.wav',
+    hurt: 'https://opengameart.org/sites/default/files/playerhurt.wav',
+    level: 'https://opengameart.org/sites/default/files/level_up.wav',
+    victory: 'https://opengameart.org/sites/default/files/level_passed.wav',
+    defeat: 'https://opengameart.org/sites/default/files/game_over.wav',
+    fail: 'https://opengameart.org/sites/default/files/fail.wav',
+  };
+
   const [screen, setScreen] = useState<Screen>('menu');
   const [difficulty, setDifficulty] = useState<Difficulty>('voidbound');
   const [hud, setHud] = useState<HudState>(() => {
@@ -786,6 +805,42 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
 
   /* ------------------------------- Audio ---------------------------------- */
 
+  const playSfx = useCallback(
+    (name: string, volume = 0.65, cooldown = 0.045) => {
+      if (!soundEnabled) return;
+      const url = SFX_URLS[name];
+      if (!url) return;
+      try {
+        const now = performance.now();
+        const last = sfxLastPlayedRef.current[name] || 0;
+        if (now - last < cooldown * 1000) return;
+        sfxLastPlayedRef.current[name] = now;
+        let pool = sfxAudioRef.current[name];
+        if (!pool) {
+          pool = Array.from({ length: 3 }, () => {
+            const audio = new Audio(url);
+            audio.preload = 'auto';
+            audio.volume = volume;
+            audio.setAttribute('playsinline', 'true');
+            return audio;
+          });
+          sfxAudioRef.current[name] = pool;
+          sfxIndexRef.current[name] = 0;
+        }
+        const index = (sfxIndexRef.current[name] || 0) % pool.length;
+        const audio = pool[index];
+        sfxIndexRef.current[name] = index + 1;
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = clamp(volume, 0, 1);
+        void audio.play().catch(() => undefined);
+      } catch {
+        // Optional external SFX.
+      }
+    },
+    [soundEnabled],
+  );
+
   const playTone = useCallback(
     (frequency: number, duration: number, type: OscillatorType = 'sine', volume = 0.025, delay = 0) => {
       if (!soundEnabled) return;
@@ -795,7 +850,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         if (!AudioContextClass) return;
         if (!audioRef.current) audioRef.current = new AudioContextClass();
         const audio = audioRef.current;
-        if (audio.state === 'suspended') void audio.resume();
+        if (audio.state === 'suspended') void audio.resume().catch(() => undefined);
         const start = audio.currentTime + delay;
         const oscillator = audio.createOscillator();
         const gain = audio.createGain();
@@ -809,7 +864,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         oscillator.start(start);
         oscillator.stop(start + duration + 0.02);
       } catch {
-        // optional
+        // Optional synthesized fallback.
       }
     },
     [soundEnabled],
@@ -817,48 +872,40 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
 
   const sfx = useMemo(
     () => ({
-      strike: () => playTone(340, 0.05, 'square', 0.014),
-      strikeHit: () => playTone(500 + random(-40, 40), 0.04, 'square', 0.014),
-      dash: () => playTone(180, 0.08, 'sawtooth', 0.016),
-      requiemFail: () => playTone(120, 0.09, 'square', 0.014),
-      perfectRequiem: () => {
-        playTone(70, 0.28, 'sawtooth', 0.032);
-        playTone(660, 0.14, 'square', 0.02, 0.02);
-        playTone(1760, 0.1, 'sine', 0.018, 0.05);
-      },
-      goodRequiem: () => {
-        playTone(90, 0.16, 'sawtooth', 0.024);
-        playTone(520, 0.1, 'square', 0.016, 0.02);
-      },
-      hit: () => playTone(95, 0.12, 'sawtooth', 0.024),
-      kill: () => playTone(240, 0.08, 'triangle', 0.016),
-      levelCard: () => {
-        playTone(520, 0.08, 'triangle', 0.02);
-        playTone(780, 0.14, 'triangle', 0.018, 0.04);
-      },
-      ascend: () => {
-        playTone(60, 0.5, 'sawtooth', 0.03);
-        playTone(880, 0.3, 'sine', 0.02, 0.1);
-        playTone(1320, 0.35, 'sine', 0.016, 0.2);
-      },
-      bossHit: () => playTone(120, 0.1, 'sawtooth', 0.02),
-      bossDefeat: () => {
-        playTone(80, 0.4, 'sawtooth', 0.03);
-        playTone(660, 0.5, 'triangle', 0.024, 0.1);
-      },
-      achievement: () => {
-        playTone(720, 0.1, 'triangle', 0.02);
-        playTone(960, 0.16, 'triangle', 0.018, 0.05);
-      },
-      pickup: () => playTone(600, 0.08, 'triangle', 0.016),
-      death: () => playTone(65, 0.5, 'sawtooth', 0.03),
-      encounterClear: () => {
-        playTone(400, 0.1, 'triangle', 0.018);
-        playTone(600, 0.14, 'triangle', 0.016, 0.06);
-      },
+      strike: () => { playSfx('attack', 0.22, 0.025); playTone(340, 0.05, 'square', 0.014); },
+      strikeHit: () => { playSfx('critical', 0.18, 0.025); playTone(500 + random(-40, 40), 0.04, 'square', 0.014); },
+      dash: () => { playSfx('dash', 0.38, 0.06); playTone(180, 0.08, 'sawtooth', 0.016); },
+      requiemFail: () => { playSfx('fail', 0.3, 0.08); playTone(120, 0.09, 'square', 0.014); },
+      perfectRequiem: () => { playSfx('critical', 0.48, 0.08); playTone(70, 0.28, 'sawtooth', 0.032); playTone(660, 0.14, 'square', 0.02, 0.02); playTone(1760, 0.1, 'sine', 0.018, 0.05); },
+      goodRequiem: () => { playSfx('ability', 0.3, 0.08); playTone(90, 0.16, 'sawtooth', 0.024); playTone(520, 0.1, 'square', 0.016, 0.02); },
+      hit: () => { playSfx('hurt', 0.34, 0.06); playTone(95, 0.12, 'sawtooth', 0.024); },
+      kill: () => { playSfx('attack', 0.16, 0.035); playTone(240, 0.08, 'triangle', 0.016); },
+      levelCard: () => { playSfx('level', 0.35, 0.08); playTone(520, 0.08, 'triangle', 0.02); playTone(780, 0.14, 'triangle', 0.018, 0.04); },
+      ascend: () => { playSfx('critical', 0.42, 0.12); playTone(60, 0.5, 'sawtooth', 0.03); playTone(880, 0.3, 'sine', 0.02, 0.1); playTone(1320, 0.35, 'sine', 0.016, 0.2); },
+      bossHit: () => { playSfx('critical', 0.26, 0.05); playTone(120, 0.1, 'sawtooth', 0.02); },
+      bossDefeat: () => { playSfx('victory', 0.62, 0.15); playTone(80, 0.4, 'sawtooth', 0.03); playTone(660, 0.5, 'triangle', 0.024, 0.1); },
+      achievement: () => { playSfx('level', 0.42, 0.08); playTone(720, 0.1, 'triangle', 0.02); playTone(960, 0.16, 'triangle', 0.018, 0.05); },
+      pickup: () => { playSfx('pickup', 0.35, 0.055); playTone(600, 0.08, 'triangle', 0.016); },
+      death: () => { playSfx('defeat', 0.5, 0.18); playTone(65, 0.5, 'sawtooth', 0.03); },
+      encounterClear: () => { playSfx('ui', 0.22, 0.08); playTone(400, 0.1, 'triangle', 0.018); playTone(600, 0.14, 'triangle', 0.016, 0.06); },
     }),
-    [playTone],
+    [playSfx, playTone],
   );
+
+  useEffect(() => {
+    if (!open || !soundEnabled) return;
+    Object.entries(SFX_URLS).forEach(([name, url]) => {
+      if (sfxAudioRef.current[name]) return;
+      sfxAudioRef.current[name] = Array.from({ length: 3 }, () => {
+        const audio = new Audio(url);
+        audio.preload = 'auto';
+        audio.volume = 0.65;
+        audio.setAttribute('playsinline', 'true');
+        return audio;
+      });
+      sfxIndexRef.current[name] = 0;
+    });
+  }, [open, soundEnabled]);
 
   /* -------------------------------- HUD sync -------------------------------- */
 
@@ -1355,9 +1402,18 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
     setScreen('game');
     setUpgradeChoices([]);
     lastFrameRef.current = performance.now();
+    if (soundEnabled) {
+      try {
+        const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (AudioContextClass && !audioRef.current) audioRef.current = new AudioContextClass();
+        if (audioRef.current?.state === 'suspended') void audioRef.current.resume().catch(() => undefined);
+      } catch {
+        // Optional audio initialization.
+      }
+    }
     sfx.dash();
     syncHud();
-  }, [difficulty, sfx, syncHud, updateSave]);
+  }, [difficulty, sfx, soundEnabled, syncHud, updateSave]);
 
   const pauseGame = useCallback(() => {
     const state = stateRef.current;
@@ -1402,7 +1458,8 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
         bossesDefeated: existing.bossesDefeated + (victory ? 1 : 0),
       }));
 
-      sfx.death();
+      if (victory) sfx.bossDefeat();
+      else sfx.death();
       syncHud();
     },
     [sfx, syncHud, unlockAchievement, updateSave],
@@ -1781,7 +1838,9 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
 
   state.damageTaken += dmg;
   state.hitsTaken += 1;
+  state.noDamageEncounter = false;
   state.combo = 0;
+  state.comboTimer = 0;
   state.invulnTimer = 0.32;
   state.timeSinceHit = 0;
   state.screenShake = screenShakeEnabled ? 12 : 0;
@@ -1795,6 +1854,7 @@ export function VoidRequiemGame({ open, onClose }: { open: boolean; onClose: () 
     particlesEnabled,
   );
 
+  if (damageNumbersEnabled) addText(state, state.playerX, state.playerY - 26, `-${Math.round(dmg)}`, PALETTE.danger, 1.05);
   sfx.hit();
 
   if (state.hp <= 0) {
@@ -2405,6 +2465,37 @@ boss.stateTimer = 0;
     [damageNumbersEnabled, particlesEnabled, reducedMotion, screenShakeEnabled, soundEnabled, updateSave],
   );
 
+  useEffect(() => {
+    if (open) return;
+    keysRef.current.clear();
+    touchDirectionRef.current = { x: 0, y: 0 };
+    touchPointerIdRef.current = null;
+    Object.values(sfxAudioRef.current).forEach((pool) => {
+      pool.forEach((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    });
+  }, [open]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(sfxAudioRef.current).forEach((pool) => {
+        pool.forEach((audio) => {
+          audio.pause();
+          audio.src = '';
+        });
+      });
+      sfxAudioRef.current = {};
+      sfxIndexRef.current = {};
+      sfxLastPlayedRef.current = {};
+      if (audioRef.current) {
+        void audioRef.current.close().catch(() => undefined);
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
   if (!open) return null;
 
   const hpRatio = hud.maxHp > 0 ? hud.hp / hud.maxHp : 0;
@@ -2453,8 +2544,7 @@ boss.stateTimer = 0;
             <button
               type="button"
               onClick={() => {
-                stateRef.current.running = false;
-                onClose();
+                closeGame();
               }}
               className="flex h-8 w-8 items-center justify-center border border-white/10 font-mono text-lg text-white/35 transition hover:border-[#5DEBFF]/50 hover:text-[#5DEBFF]"
               aria-label="Close Void Requiem"
