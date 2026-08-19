@@ -6,10 +6,7 @@ import {
   useState,
 } from 'react';
 
-import {
-  HeroCanvas,
-  type HeroCanvasHandle,
-} from '../scene/HeroCanvas';
+import { HeroCanvas } from '../scene/HeroCanvas';
 
 import { HeroArtifacts } from './../hero/HeroArtifacts';
 
@@ -84,8 +81,6 @@ const socials = [
 ];
 
 export function Hero() {
-  const [muted, setMuted] = useState(true);
-const [videoPlaying, setVideoPlaying] = useState(true);
 
 const [shadowHunterOpen, setShadowHunterOpen] =
   useState(false);
@@ -93,9 +88,6 @@ const [shadowHunterOpen, setShadowHunterOpen] =
     useState<string | null>(null);
 
   const [pressed, setPressed] = useState(false);
-
-  const heroCanvasRef =
-    useRef<HeroCanvasHandle>(null);
 
   const heroRef =
     useRef<HTMLElement>(null);
@@ -206,6 +198,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
           min-h-screen
           w-full
           overflow-hidden
+          transform-gpu
           bg-void
           text-bone
           [--mx:0]
@@ -217,12 +210,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
         {/* =====================================================
             WORLD
             ===================================================== */}
-
-        <HeroCanvas
-          ref={heroCanvasRef}
-          muted={muted}
-          onPlayingChange={setVideoPlaying}
-        />
+<HeroCanvas />
 
         {/* =====================================================
             REAL DATA ARTIFACT SYSTEM
@@ -307,302 +295,6 @@ const [shadowHunterOpen, setShadowHunterOpen] =
           </span>
         </div>
 
-        {/* =====================================================
-            WORLD CONTROL
-            ===================================================== */}
-
-        <button
-          type="button"
-          onClick={() => {
-            heroCanvasRef.current?.toggleVideo();
-          }}
-          aria-label={
-            videoPlaying
-              ? 'Freeze background animation'
-              : 'Resume background animation'
-          }
-          aria-pressed={!videoPlaying}
-          className="
-            group
-            absolute
-            right-6
-            top-6
-            z-40
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            text-bone
-            transition-all
-            duration-500
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-            hover:scale-110
-            active:scale-90
-            sm:right-10
-            sm:top-8
-          "
-        >
-          {/* OUTER ARTIFACT */}
-
-          <span
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              rotate-45
-              border
-              border-bone/20
-              bg-black/20
-              backdrop-blur-md
-              transition-all
-              duration-500
-              group-hover:rotate-[135deg]
-              group-hover:border-[#E4623F]/60
-              group-hover:bg-[#E4623F]/5
-            "
-            style={{
-              clipPath:
-                'polygon(50% 0%, 92% 20%, 100% 50%, 92% 80%, 50% 100%, 8% 80%, 0% 50%, 8% 20%)',
-            }}
-          />
-
-          {/* INNER SEAL */}
-
-          <span
-            className={`
-              pointer-events-none
-              absolute
-              inset-[5px]
-              rounded-full
-              border
-              transition-all
-              duration-700
-              ${
-                videoPlaying
-                  ? 'animate-[artifactPulse_2.4s_ease-in-out_infinite] border-[#E4623F]/35'
-                  : 'scale-90 border-[#5FC6E8]/30'
-              }
-            `}
-          />
-
-          {/* ROTATING ENERGY ARC */}
-
-          <span
-            className={`
-              pointer-events-none
-              absolute
-              inset-[2px]
-              rounded-full
-              border
-              border-transparent
-              transition-all
-              duration-700
-              ${
-                videoPlaying
-                  ? 'animate-[artifactSpin_5s_linear_infinite] border-t-[#E4623F] border-r-[#E4623F]/30'
-                  : 'rotate-180 border-b-[#5FC6E8]/60'
-              }
-            `}
-          />
-
-          {/* CROSSHAIR */}
-
-          <span className="pointer-events-none absolute inset-0">
-            <span
-              className="
-                absolute
-                left-1/2
-                top-0
-                h-1.5
-                w-px
-                -translate-x-1/2
-                bg-[#E4623F]/70
-                transition-all
-                duration-300
-                group-hover:h-2
-                group-hover:bg-[#E4623F]
-              "
-            />
-
-            <span
-              className="
-                absolute
-                bottom-0
-                left-1/2
-                h-1.5
-                w-px
-                -translate-x-1/2
-                bg-[#E4623F]/70
-                transition-all
-                duration-300
-                group-hover:h-2
-                group-hover:bg-[#E4623F]
-              "
-            />
-
-            <span
-              className="
-                absolute
-                left-0
-                top-1/2
-                h-px
-                w-1.5
-                -translate-y-1/2
-                bg-[#E4623F]/70
-              "
-            />
-
-            <span
-              className="
-                absolute
-                right-0
-                top-1/2
-                h-px
-                w-1.5
-                -translate-y-1/2
-                bg-[#E4623F]/70
-              "
-            />
-          </span>
-
-          {/* CORE GLYPH */}
-
-          <span
-            className={`
-              relative
-              z-10
-              flex
-              h-4
-              w-4
-              items-center
-              justify-center
-              font-mono
-              text-[8px]
-              transition-all
-              duration-500
-              ${
-                videoPlaying
-                  ? 'text-[#E4623F] drop-shadow-[0_0_8px_rgba(228,98,63,0.8)]'
-                  : 'text-[#5FC6E8] drop-shadow-[0_0_8px_rgba(95,198,232,0.8)]'
-              }
-            `}
-          >
-            {videoPlaying ? (
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <rect
-                  x="6"
-                  y="5"
-                  width="4"
-                  height="14"
-                  rx="0.5"
-                />
-
-                <rect
-                  x="14"
-                  y="5"
-                  width="4"
-                  height="14"
-                  rx="0.5"
-                />
-              </svg>
-            ) : (
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.3-6.86a1 1 0 0 0 0-1.66L9.53 4.29A1 1 0 0 0 8 5.14Z" />
-              </svg>
-            )}
-          </span>
-
-          {/* MICRO GLYPH */}
-
-          <span
-            className="
-              pointer-events-none
-              absolute
-              -bottom-2
-              left-1/2
-              -translate-x-1/2
-              font-mono
-              text-[6px]
-              tracking-widest
-              text-ash/50
-              transition-all
-              duration-300
-              group-hover:text-[#E4623F]
-            "
-          >
-            識
-          </span>
-
-          {/* HOVER SCAN LINE */}
-
-          <span
-            className="
-              pointer-events-none
-              absolute
-              left-1/2
-              top-1/2
-              h-px
-              w-0
-              -translate-x-1/2
-              bg-[#E4623F]
-              opacity-0
-              transition-all
-              duration-500
-              group-hover:w-7
-              group-hover:opacity-60
-            "
-          />
-
-          {/* TOOLTIP */}
-
-          <span
-            className="
-              pointer-events-none
-              absolute
-              right-[calc(100%+10px)]
-              top-1/2
-              -translate-y-1/2
-              translate-x-2
-              whitespace-nowrap
-              border
-              border-bone/10
-              bg-black/60
-              px-2
-              py-1
-              font-mono
-              text-[7px]
-              tracking-[0.18em]
-              text-bone/60
-              opacity-0
-              backdrop-blur-md
-              transition-all
-              duration-300
-              group-hover:translate-x-0
-              group-hover:opacity-100
-            "
-          >
-            {videoPlaying
-              ? 'FREEZE // WORLD'
-              : 'AWAKEN // WORLD'}
-          </span>
-        </button>
-
-
-
-
       {/* =====================================================
     SHADOW HUNTER // GAME PORTAL
     ===================================================== */}
@@ -614,7 +306,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
   className="
     group
     absolute
-    right-[4.5rem]
+    right-6
     top-6
     z-40
     flex
@@ -628,7 +320,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
     ease-[cubic-bezier(0.16,1,0.3,1)]
     hover:scale-110
     active:scale-90
-    sm:right-[7.5rem]
+    sm:right-10
     sm:top-8
   "
 >

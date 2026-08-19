@@ -39,7 +39,7 @@ import {
   type Variants,
 } from 'framer-motion';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { profile, internship } from '@/lib/content';
 
 /* -------------------------------------------------------------------------- */
@@ -323,6 +323,24 @@ export function About() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  /*
+   * Mouse input can fire hundreds of times per second. Keep the event
+   * handler allocation-free and update the motion values at most once
+   * per rendered frame.
+   */
+  const mouseFrameRef = useRef<number | null>(null);
+  const mouseTargetRef = useRef({ x: 0, y: 0 });
+  const sectionBoundsRef = useRef<DOMRect | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (mouseFrameRef.current !== null) {
+        cancelAnimationFrame(mouseFrameRef.current);
+        mouseFrameRef.current = null;
+      }
+    };
+  }, []);
+
   const smoothX = useSpring(mouseX, {
     stiffness: 70,
     damping: 20,
@@ -338,19 +356,43 @@ export function About() {
   ) {
     if (reduceMotion) return;
 
-    const rect = event.currentTarget.getBoundingClientRect();
+    /*
+     * Cache the section geometry. getBoundingClientRect() is relatively
+     * expensive when forced repeatedly during pointer movement.
+     */
+    const rect =
+      sectionBoundsRef.current ??
+      event.currentTarget.getBoundingClientRect();
 
-    const x =
-      (event.clientX - rect.left) / rect.width - 0.5;
+    sectionBoundsRef.current = rect;
 
-    const y =
-      (event.clientY - rect.top) / rect.height - 0.5;
+    mouseTargetRef.current.x =
+      ((event.clientX - rect.left) / rect.width - 0.5) * 35;
 
-    mouseX.set(x * 35);
-    mouseY.set(y * 35);
+    mouseTargetRef.current.y =
+      ((event.clientY - rect.top) / rect.height - 0.5) * 35;
+
+    if (mouseFrameRef.current !== null) return;
+
+    mouseFrameRef.current = requestAnimationFrame(() => {
+      mouseFrameRef.current = null;
+
+      mouseX.set(mouseTargetRef.current.x);
+      mouseY.set(mouseTargetRef.current.y);
+    });
   }
 
   function handleMouseLeave() {
+    sectionBoundsRef.current = null;
+
+    mouseTargetRef.current.x = 0;
+    mouseTargetRef.current.y = 0;
+
+    if (mouseFrameRef.current !== null) {
+      cancelAnimationFrame(mouseFrameRef.current);
+      mouseFrameRef.current = null;
+    }
+
     mouseX.set(0);
     mouseY.set(0);
   }
@@ -361,19 +403,19 @@ export function About() {
       id="about"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative overflow-hidden bg-void px-5 py-28 sm:px-8 sm:py-36"
+      className="relative isolate overflow-hidden bg-void px-5 py-28 sm:px-8 sm:py-36 [contain:paint] transform-gpu"
     >
       {/* ================================================================== */}
       {/* GLOBAL ATMOSPHERE                                                  */}
       {/* ================================================================== */}
 
       <motion.div
-        style={{ y: backgroundY }}
-        className="pointer-events-none absolute inset-0"
+        style={{ y: backgroundY, willChange: 'transform' }}
+        className="pointer-events-none absolute inset-0 transform-gpu"
       >
         {/* Main technical grid */}
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className="absolute inset-0 opacity-[0.035] [contain:paint]"
           style={{
             backgroundImage: `
               linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
@@ -385,7 +427,7 @@ export function About() {
 
         {/* Fine dot grid */}
         <div
-          className="absolute inset-0 opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.015] [contain:paint]"
           style={{
             backgroundImage:
               'radial-gradient(rgba(255,255,255,.8) 1px, transparent 1px)',
@@ -408,7 +450,7 @@ export function About() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute left-[-10%] top-[5%] h-[500px] w-[500px] rounded-full bg-signal/10 blur-[140px]"
+          className="absolute left-[-10%] top-[5%] h-[500px] w-[500px] rounded-full bg-signal/10 blur-[140px] transform-gpu"
         />
 
         {/* Atmospheric glow 2 */}
@@ -426,7 +468,7 @@ export function About() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute right-[-10%] top-[20%] h-[550px] w-[550px] rounded-full bg-spectral-bright/10 blur-[160px]"
+          className="absolute right-[-10%] top-[20%] h-[550px] w-[550px] rounded-full bg-spectral-bright/10 blur-[160px] transform-gpu"
         />
 
         {/* Bottom atmosphere */}
@@ -441,6 +483,7 @@ export function About() {
         style={{
           x: smoothX,
           y: smoothY,
+          willChange: 'transform',
         }}
         className="pointer-events-none absolute left-1/2 top-[25%] z-10 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-spectral-bright/[0.035] blur-[120px]"
       />
@@ -450,6 +493,7 @@ export function About() {
         style={{
           scaleY: progressScale,
           transformOrigin: 'top',
+          willChange: 'transform',
         }}
         className="pointer-events-none absolute bottom-0 left-0 top-0 z-30 hidden w-px bg-gradient-to-b from-signal via-spectral-bright to-transparent lg:block"
       />
@@ -689,12 +733,13 @@ export function About() {
             style={{
               y: commandCenterY,
               rotate: commandCenterRotate,
+              willChange: 'transform',
             }}
             variants={revealRight}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
-            className="relative mx-auto w-full max-w-[620px]"
+            className="relative mx-auto w-full max-w-[620px] transform-gpu"
           >
             {/* Main dashboard */}
             <div className="relative overflow-hidden border border-spectral-bright/25 bg-[#05070d]/90 backdrop-blur-md">
@@ -1087,7 +1132,7 @@ export function About() {
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
-              className="absolute -bottom-5 -right-2 hidden border border-signal/30 bg-[#070914]/95 px-4 py-3 shadow-2xl backdrop-blur-md sm:block"
+              className="absolute -bottom-5 -right-2 hidden transform-gpu border border-signal/30 bg-[#070914]/95 px-4 py-3 shadow-2xl backdrop-blur-md sm:block"
             >
               <div className="flex items-center gap-3">
                 <CheckCircle2
@@ -1433,7 +1478,7 @@ export function About() {
                 duration: 5,
                 repeat: Infinity,
               }}
-              className="pointer-events-none absolute bottom-0 right-0 h-48 w-48 rounded-full bg-signal blur-[70px]"
+              className="pointer-events-none absolute bottom-0 right-0 h-48 w-48 rounded-full bg-signal blur-[70px] transform-gpu"
             />
           </motion.div>
         </div>

@@ -6,6 +6,8 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 type ArtifactProps = {
   profile: {
     name: string;
@@ -366,6 +368,7 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
           pointer-events: auto;
           overflow: visible;
           perspective: 1400px;
+          transform: translateZ(0);
         }
 
         .hero-artifact-stack {
@@ -412,13 +415,15 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
             inset 0 1px 0 rgba(255, 255, 255, 0.045);
           transform: translate3d(0, 0, 0);
           transform-style: preserve-3d;
+          isolation: isolate;
+          contain: layout paint style;
           animation: artifactFloat 6.5s ease-in-out infinite;
-          will-change: transform, box-shadow;
+          will-change: transform;
           transition:
-            transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 300ms ease,
-            box-shadow 350ms ease,
-            background 350ms ease;
+            transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 360ms ease,
+            box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1),
+            background 420ms ease;
         }
 
         .artifact-frame::before {
@@ -436,8 +441,8 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
 
         .artifact-frame:hover {
           animation-play-state: paused;
-          transform: translate3d(-7px, -3px, 12px) scale(1.012)
-            rotateX(0.5deg);
+          transform: translate3d(-5px, -2px, 8px) scale(1.012)
+            rotateX(0.4deg);
           border-color: var(--artifact-accent);
           box-shadow:
             0 24px 55px rgba(0, 0, 0, 0.36),
@@ -691,11 +696,11 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
           cursor: pointer;
           touch-action: manipulation;
           transition:
-            transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 220ms ease,
-            background 220ms ease,
-            color 220ms ease,
-            box-shadow 220ms ease;
+            transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 280ms ease,
+            background 280ms ease,
+            color 240ms ease,
+            box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .foundation-tab {
@@ -772,8 +777,9 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
 
         .codex-content-reveal,
         .vault-content-reveal {
-          animation: artifactContentReveal 420ms
+          animation: artifactContentReveal 520ms
             cubic-bezier(0.16, 1, 0.3, 1) both;
+          will-change: transform, opacity, filter;
         }
 
         .codex-core {
@@ -998,7 +1004,13 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
 
         .artifact-frame button:focus-visible {
           outline: 1px solid var(--artifact-accent);
-          outline-offset: 2px;
+          outline-offset: 3px;
+          box-shadow:
+            0 0 0 3px color-mix(
+              in srgb,
+              var(--artifact-accent) 10%,
+              transparent
+            );
         }
 
         @media (max-height: 760px) and (min-width: 1280px) {
@@ -1050,7 +1062,13 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
           .codex-content-reveal,
           .vault-content-reveal {
             animation: none !important;
-            display: none;
+            filter: none !important;
+          }
+
+          .codex-content-reveal,
+          .vault-content-reveal {
+            opacity: 1 !important;
+            transform: none !important;
           }
         }
 
@@ -1066,7 +1084,7 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
 
         @keyframes artifactScan {
           0% {
-            left: -120%;
+            transform: translate3d(-220%, 0, 0);
             opacity: 0;
           }
 
@@ -1083,7 +1101,7 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
           }
 
           100% {
-            left: 130%;
+            transform: translate3d(220%, 0, 0);
             opacity: 0;
           }
         }
@@ -1159,12 +1177,19 @@ export function HeroArtifacts({ profile: _profile }: ArtifactProps) {
         @keyframes artifactContentReveal {
           from {
             opacity: 0;
-            transform: translateY(5px);
+            transform: translate3d(0, 8px, 0) scale(0.992);
+            filter: blur(3px);
+          }
+
+          55% {
+            opacity: 0.92;
+            filter: blur(0.5px);
           }
 
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0) scale(1);
+            filter: blur(0);
           }
         }
       `}</style>

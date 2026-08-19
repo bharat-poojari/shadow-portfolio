@@ -9,13 +9,17 @@ import {
   useState,
 } from 'react';
 
-import { Canvas } from '@react-three/fiber';
 import { useReducedMotion } from '@/lib/useReducedMotion';
 
 /* =========================================================
    PUBLIC HANDLE
    ========================================================= */
 
+/**
+ * Retained for source compatibility with existing parent refs.
+ * Background playback no longer exists, so these methods are intentionally
+ * no-ops.
+ */
 export type HeroCanvasHandle = {
   toggleVideo: () => boolean;
   pauseVideo: () => void;
@@ -74,67 +78,29 @@ const CANNON_Y = 72;
 export const HeroCanvas = forwardRef<
   HeroCanvasHandle,
   HeroCanvasProps
->(function HeroCanvas(
-  {
-    muted = true,
-    onPlayingChange,
-  },
-  ref
-) {
+>(function HeroCanvas(_props, _ref) {
+  useImperativeHandle(
+    _ref,
+    () => ({
+      toggleVideo: () => false,
+      pauseVideo: () => {},
+      playVideo: () => {},
+    }),
+    []
+  );
   const reduced = useReducedMotion();
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  /* =======================================================
-     VIDEO CONTROL
-     ======================================================= */
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      toggleVideo() {
-        const video = videoRef.current;
-
-        if (!video) return false;
-
-        if (video.paused) {
-          void video.play();
-          onPlayingChange?.(true);
-          return true;
-        }
-
-        video.pause();
-        onPlayingChange?.(false);
-
-        return false;
-      },
-
-      pauseVideo() {
-        const video = videoRef.current;
-
-        if (!video) return;
-
-        video.pause();
-        onPlayingChange?.(false);
-      },
-
-      playVideo() {
-        const video = videoRef.current;
-
-        if (!video) return;
-
-        void video.play();
-        onPlayingChange?.(true);
-      },
-    }),
-    [onPlayingChange]
-  );
+  /*
+   * The hero background is intentionally static.
+   * The former video element and its playback controls have been removed
+   * to eliminate continuous media decoding, playback work, and related
+   * state updates. All visual interaction/animation remains CSS/DOM driven.
+   */
 
   /* =======================================================
      WEAPON STATE
      ======================================================= */
 
-  const [armed, setArmed] = useState(false);
   const [charging, setCharging] = useState(false);
   const [firing, setFiring] = useState(false);
   const [impact, setImpact] = useState(false);
@@ -174,6 +140,11 @@ export const HeroCanvas = forwardRef<
       if (chargeRafRef.current) {
         cancelAnimationFrame(chargeRafRef.current);
       }
+
+      if (audioContextRef.current) {
+        void audioContextRef.current.close().catch(() => {});
+        audioContextRef.current = null;
+      }
     };
   }, []);
 
@@ -182,6 +153,17 @@ export const HeroCanvas = forwardRef<
      
      Generated locally with Web Audio.
      No external audio file required.
+     ======================================================= */
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  /* =======================================================
+     FIRE SOUND
+
+     Generated locally with Web Audio.
+     The AudioContext is reused instead of being created and
+     closed for every shot, reducing repeated audio allocation
+     while preserving the existing sound.
      ======================================================= */
 
   const playFireSound = useCallback(() => {
@@ -196,52 +178,51 @@ export const HeroCanvas = forwardRef<
 
       if (!AudioContextClass) return;
 
-      const context = new AudioContextClass();
+      let context = audioContextRef.current;
+
+      if (!context) {
+        context = new AudioContextClass();
+        audioContextRef.current = context;
+      }
+
+      if (context.state === 'suspended') {
+        void context.resume();
+      }
 
       const oscillator = context.createOscillator();
       const gain = context.createGain();
+      const now = context.currentTime;
 
       oscillator.type = 'sawtooth';
 
-      oscillator.frequency.setValueAtTime(
-        95,
-        context.currentTime
-      );
-
+      oscillator.frequency.setValueAtTime(95, now);
       oscillator.frequency.exponentialRampToValueAtTime(
         38,
-        context.currentTime + 0.18
+        now + 0.18
       );
 
-      gain.gain.setValueAtTime(
-        0.0001,
-        context.currentTime
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.12,
-        context.currentTime + 0.015
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        context.currentTime + 0.2
-      );
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.12, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
 
       oscillator.connect(gain);
       gain.connect(context.destination);
 
-      oscillator.start();
+      oscillator.start(now);
+      oscillator.stop(now + 0.21);
 
-      oscillator.stop(context.currentTime + 0.21);
-
-      window.setTimeout(() => {
-        void context.close();
-      }, 300);
+      oscillator.addEventListener(
+        'ended',
+        () => {
+          oscillator.disconnect();
+          gain.disconnect();
+        },
+        { once: true }
+      );
     } catch {
       /*
        * Audio is purely additive.
-       * Failing to create it must never break firing.
+       * Failing to create or resume it must never break firing.
        */
     }
   }, []);
@@ -267,7 +248,6 @@ export const HeroCanvas = forwardRef<
 
     const id = shotIdRef.current++;
 
-    setArmed(true);
     setFiring(true);
 
     setShots((current) => [
@@ -316,7 +296,6 @@ export const HeroCanvas = forwardRef<
   const startCharge = useCallback(() => {
     pointerDownRef.current = true;
 
-    setArmed(true);
     setCharging(false);
     setChargeProgress(0);
 
@@ -407,8 +386,7 @@ export const HeroCanvas = forwardRef<
     setChargeProgress(0);
 
     window.setTimeout(() => {
-      setArmed(false);
-    }, 500);
+      }, 500);
   }, [charging, fireShot]);
 
   /* =======================================================
@@ -435,6 +413,7 @@ export const HeroCanvas = forwardRef<
         inset-0
         overflow-hidden
         bg-black
+        transform-gpu
         ${
           impact
             ? 'hero-cannon-impact'
@@ -444,34 +423,31 @@ export const HeroCanvas = forwardRef<
       aria-hidden={false}
     >
       {/* ===================================================
-          BACKGROUND VIDEO
+          STATIC BACKGROUND
+
+          bg.webp replaces the former video completely.
+          This avoids continuous video decoding/compositing while
+          preserving the same cover-style hero composition.
           =================================================== */}
 
-      <video
-        ref={videoRef}
+      <div
         className="
+          pointer-events-none
           absolute
           inset-0
           z-0
-          h-full
-          w-full
-          object-cover
+          bg-black
+          bg-[url('/bg.webp')]
+          bg-cover
+          bg-center
+          bg-no-repeat
           scale-[1.015]
           contrast-[1.08]
           saturate-[1.1]
           brightness-[0.96]
-          transition-[filter,transform]
-          duration-[1400ms]
-          ease-[cubic-bezier(0.16,1,0.3,1)]
+          transform-gpu
         "
-        src="/bg.mp4"
-        autoPlay
-        loop
-        muted={muted}
-        playsInline
-        preload="auto"
-        onPlay={() => onPlayingChange?.(true)}
-        onPause={() => onPlayingChange?.(false)}
+        aria-hidden="true"
       />
 
       {/* ===================================================
@@ -522,38 +498,6 @@ export const HeroCanvas = forwardRef<
           [background:repeating-linear-gradient(0deg,transparent_0px,transparent_3px,rgba(255,255,255,0.18)_4px)]
         "
       />
-
-      {/* ===================================================
-          WEBGL ATMOSPHERE
-
-          IMPORTANT:
-          pointer-events-none prevents Canvas from blocking
-          the weapon target interaction layer.
-          =================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          z-10
-        "
-      >
-        <Canvas
-          camera={{
-            position: [0, 0, 5],
-            fov: 50,
-          }}
-          dpr={[1, 1.75]}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-          }}
-        >
-          <ambientLight intensity={0.3} />
-        </Canvas>
-      </div>
 
       {/* ===================================================
           CANNON SYSTEM

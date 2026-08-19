@@ -295,6 +295,29 @@ function normalizeSkill(value: string) {
     .replace(/\s+/g, ' ');
 }
 
+/**
+ * O(1) icon lookup table.
+ *
+ * The original component normalizes each skill and derives its compact
+ * variant every time SkillLogo renders. Building this once keeps the
+ * render path cheap without changing the resulting icon selection.
+ */
+const RESOLVED_SKILL_ICONS = (() => {
+  const registry: Record<string, string> = {};
+
+  for (const [key, icon] of Object.entries(SKILL_ICONS)) {
+    const normalized = normalizeSkill(key);
+    const compact = normalized
+      .replace(/[._]/g, '')
+      .replace(/\s+/g, '');
+
+    registry[normalized] = icon;
+    registry[compact] = icon;
+  }
+
+  return registry;
+})();
+
 
 /* ==========================================================================
    REAL LOGO COMPONENT
@@ -314,8 +337,8 @@ function SkillLogo({
     .replace(/\s+/g, '');
 
   const iconName =
-    SKILL_ICONS[normalized] ??
-    SKILL_ICONS[compact];
+    RESOLVED_SKILL_ICONS[normalized] ??
+    RESOLVED_SKILL_ICONS[compact];
 
   /*
    * Known technology:
@@ -516,6 +539,23 @@ const categoryReveal: Variants = {
 
 
 /* ==========================================================================
+   PRECOMPUTED CATEGORY METADATA
+   ========================================================================== */
+
+const CATEGORY_META = new Map(
+  skillGroups.map((group) => [
+    group.id,
+    getCategoryMeta(group.label),
+  ]),
+);
+
+const TOTAL_CAPABILITIES = skillGroups.reduce(
+  (total, group) => total + group.items.length,
+  0,
+);
+
+
+/* ==========================================================================
    MAIN COMPONENT
    ========================================================================== */
 
@@ -555,15 +595,11 @@ export function Skills() {
   }
 
 
-  const categoryMeta = getCategoryMeta(active.label);
+  const categoryMeta =
+    CATEGORY_META.get(active.id) ??
+    getCategoryMeta(active.label);
 
   const CategoryIcon = categoryMeta.icon;
-
-
-  const totalCapabilities = skillGroups.reduce(
-    (total, group) => total + group.items.length,
-    0,
-  );
 
 
   return (
@@ -572,6 +608,8 @@ export function Skills() {
       className="
         relative
         overflow-hidden
+        isolate
+        contain-paint
         bg-void-raised
         px-5
         py-28
@@ -592,6 +630,8 @@ export function Skills() {
             absolute
             inset-0
             opacity-[0.028]
+            contain-paint
+            contain-paint
           "
           style={{
             backgroundImage: `
@@ -615,6 +655,7 @@ export function Skills() {
             absolute
             inset-0
             opacity-[0.018]
+            contain-paint
           "
           style={{
             backgroundImage:
@@ -647,6 +688,8 @@ export function Skills() {
             rounded-full
             bg-signal/10
             blur-[150px]
+            transform-gpu
+            will-change-transform
           "
         />
 
@@ -674,6 +717,8 @@ export function Skills() {
             rounded-full
             bg-spectral-bright/10
             blur-[150px]
+            transform-gpu
+            will-change-transform
           "
         />
       </div>
@@ -910,7 +955,7 @@ export function Skills() {
                 >
                   {skillGroups.length} GROUPS //
                   {' '}
-                  {totalCapabilities}
+                  {TOTAL_CAPABILITIES}
                   {' '}
                   CAPABILITIES
                 </p>
@@ -998,9 +1043,8 @@ export function Skills() {
                 {skillGroups.map(
                   (group, index) => {
                     const meta =
-                      getCategoryMeta(
-                        group.label,
-                      );
+                      CATEGORY_META.get(group.id) ??
+                      getCategoryMeta(group.label);
 
                     const IconComponent =
                       meta.icon;
@@ -1035,7 +1079,7 @@ export function Skills() {
                           px-4
                           py-3.5
                           text-left
-                          transition-all
+                          transition-colors
                           duration-300
                           last:border-b-0
                           ${
@@ -1988,6 +2032,8 @@ export function Skills() {
               from-transparent
               via-signal
               to-transparent
+              transform-gpu
+              will-change-transform
             "
           />
 
