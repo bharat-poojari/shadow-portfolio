@@ -67,10 +67,31 @@ export type Project = {
   liveUrl?: string;
 };
 
+export type OtherProject = {
+  id: string;
+  title: string;
+  description: string;
+  githubUrl: string;
+};
+
 export const projects: Project[] = [
   {
-    id: 'furniqo',
+    id: 'offyai',
     order: 1,
+    title: 'OffyAI',
+    subtitle: 'Local AI Desktop Application',
+    category: 'ai',
+    stack: ['JavaScript', 'Electron', 'React', 'Node.js', 'llama.cpp', 'GGUF', 'Hugging Face API'],
+    points: [
+      'Windows desktop application for running and interacting with local Large Language Models through a polished ChatGPT-like workspace.',
+      'Model management, local sessions, configurable inference, document context, and live CPU, RAM, GPU, latency, and token-throughput monitoring.',
+    ],
+    githubUrl: 'https://github.com/bharat-poojari/offyai',
+    liveUrl: 'https://offyai.vercel.app',
+  },
+  {
+    id: 'furniqo',
+    order: 2,
     title: 'Furniqo',
     subtitle: 'Premium Furniture E-commerce Platform',
     category: 'flagship',
@@ -83,62 +104,76 @@ export const projects: Project[] = [
     liveUrl: 'https://the-furniqo.vercel.app',
   },
   {
-    id: 'offyai',
-    order: 2,
-    title: 'OffyAI',
-    subtitle: 'Offline AI Programming Assistant',
-    category: 'ai',
-    stack: ['Python', 'LLM (Qwen2.5)', 'Machine Learning', 'HTML', 'CSS', 'JavaScript'],
+    id: 'shadow-portfolio',
+    order: 3,
+    title: 'Portfolio',
+    subtitle: 'Immersive Developer Portfolio',
+    category: 'evolution',
+    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Three.js', 'Framer Motion'],
     points: [
-      'Offline AI-powered programming assistant using a fine-tuned LLM for privacy-focused coding guidance without internet access.',
-      'Intuitive interface for programming queries and code explanations, optimized for lightweight execution on standard hardware.',
+      'Dark, immersive developer portfolio inspired by the Shadow Monarch, presenting skills, projects, and a coding journey as a living archive.',
+      'Interactive motion, atmospheric 3D scene work, responsive layouts, and structured content built for a fast, accessible browsing experience.',
     ],
-    githubUrl: 'https://github.com/bharat-poojari/offyai',
+    githubUrl: 'https://github.com/bharat-poojari/shadow-portfolio',
+    liveUrl: 'https://bharat-poojari.vercel.app',
+  },
+];
+
+export const otherProjects: OtherProject[] = [
+  {
+    id: 'offyai-website',
+    title: 'OffyAI Website',
+    description: 'Product website for the local-first AI desktop application.',
+    githubUrl: 'https://github.com/bharat-poojari/offyai-website',
   },
   {
     id: 'primenews',
-    order: 3,
     title: 'PrimeNews',
-    subtitle: 'Real-Time News Portal',
-    category: 'frontend',
-    stack: ['React.js', 'Vite', 'Tailwind CSS', 'REST APIs', 'Zustand'],
-    points: [
-      'Responsive React application aggregating real-time news from multiple APIs with fallback mechanisms, category filtering, and search.',
-      'Bookmarks and infinite scrolling; performance optimized through caching, lazy loading, code splitting, and light/dark theme support.',
-    ],
+    description: 'Real-time news aggregator with category filtering, search, and persistent bookmarks.',
     githubUrl: 'https://github.com/bharat-poojari/PrimeNews',
-    liveUrl: 'https://the-prime-news.vercel.app',
   },
   {
     id: 'codepolish',
-    order: 4,
     title: 'CodePolish',
-    subtitle: 'VS Code Extension',
-    category: 'tooling',
-    stack: ['TypeScript', 'Node.js', 'VS Code Extension API', 'JavaScript'],
-    points: [
-      'Published VS Code extension that beautifies and minifies source code across multiple languages, with automatic language detection.',
-      'Keyboard shortcuts and command palette integration to streamline developer workflow while preserving syntax and functionality.',
-    ],
+    description: 'VS Code extension for beautifying and minifying HTML, CSS, and JavaScript.',
     githubUrl: 'https://github.com/bharat-poojari/codepolish',
   },
   {
-    id: 'bharat-portfolio',
-    order: 5,
-    title: 'Personal Portfolio (Previous)',
-    subtitle: 'Developer Portfolio',
-    category: 'evolution',
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'Vercel'],
-    points: [
-      'Responsive developer portfolio with interactive project showcase, dark/light theme, and smooth animations; optimized for SEO and performance.',
-      'This site — The Living Chronicle — is the next evolution of that work.',
-    ],
-    githubUrl: 'https://github.com/bharat-poojari/Bharat-Portfolio',
-    liveUrl: 'https://bharat-poojari-portfolio.vercel.app',
+    id: 'student-management-system',
+    title: 'Student Management System',
+    description: 'Open-source platform for attendance, grades, and student progress.',
+    githubUrl: 'https://github.com/bharat-poojari/student-management-system',
   },
-  // NOTE: resume achievements state "six" independently built applications,
-  // but only five are named in the source resume. Do not fabricate a sixth —
-  // add it here once Bharat supplies the name/details.
+  {
+    id: 'volcanico',
+    title: 'VOLCANICO',
+    description: 'Immersive restaurant experience with cart interactions and scroll animation.',
+    githubUrl: 'https://github.com/bharat-poojari/VOLCANICO',
+  },
+  {
+    id: 'restaurant',
+    title: 'Restaurant',
+    description: 'Responsive React and Vite restaurant website deployed on Vercel.',
+    githubUrl: 'https://github.com/bharat-poojari/restaurant',
+  },
+  {
+    id: 'college-website',
+    title: 'College Website',
+    description: 'Full-stack college portal with role-based access, CRUD, and file uploads.',
+    githubUrl: 'https://github.com/bharat-poojari/college-website',
+  },
+  {
+    id: 'offy-ai',
+    title: 'Offy AI',
+    description: 'Offline-first programming model fine-tuned to support coding education.',
+    githubUrl: 'https://github.com/bharat-poojari/offy_ai',
+  },
+  {
+    id: 'bharat-portfolio',
+    title: 'Bharat Portfolio',
+    description: 'Earlier developer portfolio with a terminal interface and project gallery.',
+    githubUrl: 'https://github.com/bharat-poojari/Bharat-Portfolio',
+  },
 ];
 
 export type EducationItem = {

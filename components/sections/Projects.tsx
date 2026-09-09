@@ -46,7 +46,7 @@ import {
   useState,
 } from 'react';
 
-import { projects } from '@/lib/content';
+import { otherProjects, projects } from '@/lib/content';
 
 
 /* ============================================================================
@@ -2012,7 +2012,7 @@ export function Projects() {
 
 
           {/* =============================================================== */}
-          {/* RESERVED SLOT                                                   */}
+          {/* OTHER PROJECTS                                                  */}
           {/* =============================================================== */}
 
           {activeCategory ===
@@ -2025,97 +2025,46 @@ export function Projects() {
                 viewport={{
                   once: true,
                 }}
-                className="
-                  relative
-                  overflow-hidden
-                  border
-                  border-dashed
-                  border-void-line
-                  p-8
-                "
+                className="border border-void-line bg-void-raised"
               >
-
-                <motion.div
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          x: [
-                            '-100%',
-                            '200%',
-                          ],
-                        }
-                  }
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
-                  className="
-                    absolute
-                    left-0
-                    top-0
-                    h-px
-                    w-1/3
-                    bg-gradient-to-r
-                    from-transparent
-                    via-signal
-                    to-transparent
-                  "
-                />
-
-
-                <div
-                  className="
-                    flex
-                    flex-col
-                    items-center
-                    text-center
-                  "
-                >
-
-                  <div
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      items-center
-                      justify-center
-                      border
-                      border-void-line
-                    "
-                  >
-                    <Network
-                      size={17}
-                      className="text-ash"
-                    />
+                <div className="border-b border-void-line p-6 sm:p-7">
+                  <div className="flex items-center gap-3">
+                    <Network size={16} className="text-signal" />
+                    <p className="font-mono text-[9px] tracking-[0.25em] text-signal">
+                      THE ARCHIVE // OTHER PROJECTS
+                    </p>
                   </div>
-
-
-                  <p
-                    className="
-                      mt-4
-                      font-mono
-                      text-[8px]
-                      tracking-[0.25em]
-                      text-ash
-                    "
-                  >
-                    06 // RESERVED
+                  <p className="mt-3 max-w-2xl font-body text-sm leading-6 text-bone-muted">
+                    Additional experiments, products, and systems from the GitHub repository.
                   </p>
+                </div>
 
-
-                  <p
-                    className="
-                      mt-2
-                      font-display
-                      text-lg
-                      text-bone-muted
-                    "
-                  >
-                    Next campaign pending.
-                  </p>
-
+                <div className="grid divide-y divide-void-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3">
+                  {otherProjects.map((project) => (
+                    <a
+                      key={project.id}
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex min-h-[150px] flex-col justify-between p-5 transition-colors duration-300 hover:bg-black/20"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-3">
+                          <h3 className="font-display text-lg leading-tight text-bone transition-colors group-hover:text-spectral-bright">
+                            {project.title}
+                          </h3>
+                          <ArrowUpRight size={15} className="shrink-0 text-ash transition-colors group-hover:text-signal" />
+                        </div>
+                        <p className="mt-2 font-body text-xs leading-5 text-bone-muted">
+                          {project.description}
+                        </p>
+                      </div>
+                      <span className="mt-5 inline-flex items-center gap-2 font-mono text-[8px] tracking-[0.15em] text-ash group-hover:text-signal">
+                        <Github size={12} />
+                        VIEW REPOSITORY
+                      </span>
+                    </a>
+                  ))}
                 </div>
 
               </motion.div>
