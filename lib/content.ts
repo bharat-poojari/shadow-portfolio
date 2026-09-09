@@ -262,7 +262,7 @@ export const certifications: Certification[] = [
 
 export const achievements: string[] = [
   'Maintained a CGPA of 9.02/10 throughout the BCA program.',
-  'Independently developed and deployed six full-stack and AI-powered applications, including an offline AI assistant, a 3D e-commerce platform, and a published VS Code extension.',
+  'Built and deployed OffyAI, a Windows desktop application for running local Large Language Models with model management, configurable inference, document context, and live performance monitoring.',
   'Completed a Prompt Engineering – Web Development internship at ProEdge Learning, A VisionPro Ventures Pvt. Ltd.',
 ];
 
