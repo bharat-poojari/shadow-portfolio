@@ -42,12 +42,19 @@ export const metadata: Metadata = {
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Explore the work, skills, projects, education, and certifications of Full Stack Developer Bharat Chandru Poojari.',
+    images: [{ url: '/perfect.png', width: 512, height: 512, alt: 'Bharat Chandru Poojari' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Full Stack Developer specializing in Node.js, React.js, and AI integration.',
+    images: ['/perfect.png'],
+  },
+  icons: {
+    icon: [{ url: '/perfect.png', type: 'image/png', sizes: '512x512' }],
+    apple: [{ url: '/perfect.png', type: 'image/png', sizes: '512x512' }],
+    shortcut: ['/perfect.png'],
   },
   robots: {
     index: true,
@@ -131,6 +138,8 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        <link rel="icon" href="/perfect.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/perfect.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
