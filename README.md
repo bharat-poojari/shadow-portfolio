@@ -21,6 +21,19 @@ npm run dev
 
 Open http://localhost:3000.
 
+## Search engine setup
+
+The production hostname is configured as `https://bharat-poojari.vercel.app`
+by default. Set `NEXT_PUBLIC_SITE_URL` in Vercel if the canonical domain
+changes. The app emits `robots.txt`, `sitemap.xml`, and
+`manifest.webmanifest`, and uses `public/perfect.png` for the browser,
+search-result, tab, Apple touch, and social preview icon.
+
+Google verification is already included. After adding the site in Bing
+Webmaster Tools, set the returned token as `BING_SITE_VERIFICATION` in the
+Vercel project environment and redeploy. The token is then emitted as the
+`msvalidate.01` verification meta tag.
+
 ## Project structure
 
 ```

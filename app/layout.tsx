@@ -61,7 +61,6 @@ export const metadata: Metadata = {
     description:
       'Full Stack Developer specializing in Node.js, React.js, and AI integration.',
     images: [iconPath],
-    site: '@bharat_poojari',
   },
   icons: {
     icon: [{ url: iconPath, type: 'image/png', sizes: '1230x1278' }],
