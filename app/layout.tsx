@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bharat-poojari.vercel.app';
+const siteName = 'Bharat Chandru Poojari Portfolio';
+const iconPath = '/perfect.png';
 
 // Fonts are loaded via standard <link> tags in the <head> below rather than
 // next/font/google. next/font fetches font files at *build time*, which
@@ -11,6 +13,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bharat-poojari.verc
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: siteName,
   title: {
     default: 'Bharat Chandru Poojari | Full Stack Developer',
     template: '%s | Bharat Chandru Poojari',
@@ -31,30 +34,46 @@ export const metadata: Metadata = {
   authors: [{ name: 'Bharat Chandru Poojari', url: 'https://github.com/bharat-poojari' }],
   creator: 'Bharat Chandru Poojari',
   publisher: 'Bharat Chandru Poojari',
+  category: 'technology',
+  referrer: 'origin-when-cross-origin',
+  formatDetection: {
+    telephone: false,
+  },
   alternates: {
     canonical: '/',
+    languages: {
+      'en-IN': '/',
+    },
   },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: '/',
-    siteName: 'Bharat Chandru Poojari Portfolio',
+    siteName,
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Explore the work, skills, projects, education, and certifications of Full Stack Developer Bharat Chandru Poojari.',
-    images: [{ url: '/perfect.png', width: 512, height: 512, alt: 'Bharat Chandru Poojari' }],
+    images: [{ url: iconPath, width: 1230, height: 1278, alt: 'Bharat Chandru Poojari' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Full Stack Developer specializing in Node.js, React.js, and AI integration.',
-    images: ['/perfect.png'],
+    images: [iconPath],
+    site: '@bharat_poojari',
   },
   icons: {
-    icon: [{ url: '/perfect.png', type: 'image/png', sizes: '512x512' }],
-    apple: [{ url: '/perfect.png', type: 'image/png', sizes: '512x512' }],
-    shortcut: ['/perfect.png'],
+    icon: [{ url: iconPath, type: 'image/png', sizes: '1230x1278' }],
+    apple: [{ url: iconPath, type: 'image/png', sizes: '1230x1278' }],
+    shortcut: [{ url: iconPath, type: 'image/png' }],
+  },
+  manifest: '/manifest.webmanifest',
+  verification: {
+    google: '8IsUEadK0DA_EArkB89dOJkUj0MMbVKmujCqq_FVUeE',
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }
+      : {}),
   },
   robots: {
     index: true,
@@ -130,16 +149,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta
-          name="google-site-verification"
-          content="8IsUEadK0DA_EARkB89dOJkUj0MMbVKmujCqq_FVUeE"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        <link rel="icon" href="/perfect.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/perfect.png" />
+        <link rel="icon" href={iconPath} type="image/png" sizes="1230x1278" />
+        <link rel="apple-touch-icon" href={iconPath} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
