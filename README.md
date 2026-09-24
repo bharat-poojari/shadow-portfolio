@@ -41,7 +41,7 @@ Not just a portfolio — a **cinematic experience**. Built as a dark, atmospheri
 
 |     | Feature                                                                         |
 | --- | ------------------------------------------------------------------------------- |
-| 🎬  | Cinematic dark visual system with a first-visit portal sequence                 |
+| 🎬  | Cinematic dark visual system with a lightweight startup loader                  |
 | 🎯  | Hero interaction with pointer parallax + an interactive cannon sequence         |
 | 🕹️ | **Fun Zone** — browser games loaded on demand via dynamic imports               |
 | 🧩  | Project showcase with live filtering and project links                          |
@@ -74,9 +74,8 @@ Not just a portfolio — a **cinematic experience**. Built as a dark, atmospheri
 flowchart TD
     subgraph APP["Next.js 14 App Router"]
         L["layout.tsx<br/>Metadata · JSON-LD · Fonts"]
-        P["page.tsx<br/>Main page + first-visit portal"]
+        P["page.tsx<br/>Main page + lightweight loader"]
         SEO["robots.ts · sitemap.ts<br/>manifest.ts · icon.tsx<br/>opengraph-image.tsx"]
-        API["api/visitor-node<br/>Visitor metadata endpoint"]
     end
 
     subgraph COMPONENTS["components/"]
@@ -105,7 +104,6 @@ flowchart TD
     GAME --> R3F
     SECTIONS --> CONTENT
     P --> SEO
-    P --> API
 ```
 
 ### 📦 Dependency Orbit
@@ -143,14 +141,13 @@ mindmap
 shadow-portfolio/
 ├── app/
 │   ├── layout.tsx              # Global metadata, JSON-LD, fonts, document shell
-│   ├── page.tsx                # Main portfolio page + first-visit portal
+│   ├── page.tsx                # Main portfolio page + lightweight loader
 │   ├── globals.css             # Tailwind layers & global performance styles
 │   ├── manifest.ts             # Web app manifest
 │   ├── robots.ts               # Robots rules + sitemap declaration
 │   ├── sitemap.ts              # XML sitemap
 │   ├── icon.tsx                # Generated 48×48 crawler-friendly icon
 │   ├── opengraph-image.tsx     # Generated 1200×630 social preview
-│   └── api/visitor-node/       # Visitor metadata endpoint
 ├── components/
 │   ├── game/                   # Interactive canvas games (lazy-loaded)
 │   ├── hero/                   # Hero visual artifacts
@@ -226,7 +223,7 @@ Open [http://localhost:3000](http://localhost:3000) in a browser.
 This project treats performance as a first-class feature:
 
 - 🎮 **Games lazy-loaded** with client-only dynamic imports — zero impact on the initial page bundle
-- 📊 **First-visit progress bar** mutates DOM style directly instead of re-rendering React at animation-frame frequency
+- ⚡ **Lightweight startup loader** disappears after hydration without blocking the page
 - 📐 **Pointer parallax** caches layout measurements with `ResizeObserver`
 - 👁️ **Below-the-fold sections** use `content-visibility: auto` to defer expensive rendering
 - 🖼️ **Hero uses a static background** instead of continuous video decoding

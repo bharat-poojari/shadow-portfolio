@@ -767,7 +767,7 @@ export function PortfolioFooter() {
           </div>
 
 
-          {/* Shadow Scan */}
+          {/* System status */}
           <div>
 
             <p
@@ -779,7 +779,7 @@ export function PortfolioFooter() {
                 text-ash
               "
             >
-              SHADOW SCAN
+              SYSTEM STATUS
             </p>
 
 
@@ -803,32 +803,6 @@ export function PortfolioFooter() {
                 bg-signal/[0.025]
               "
             >
-
-              {/* Animated scan beam */}
-              {!reduceMotion && (
-                <motion.div
-                  animate={{
-                    x: ['-120%', '220%'],
-                  }}
-                  transition={{
-                    duration: 2.8,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
-                  className="
-                    pointer-events-none
-                    absolute
-                    inset-y-0
-                    w-1/3
-                    bg-gradient-to-r
-                    from-transparent
-                    via-signal/10
-                    to-transparent
-                    blur-md
-                  "
-                />
-              )}
-
 
               {/* Widget header */}
               <div
@@ -892,7 +866,7 @@ export function PortfolioFooter() {
                       text-signal
                     "
                   >
-                    NODE DETECTION
+                    SYSTEM STATUS
                   </span>
 
                 </div>
@@ -906,7 +880,7 @@ export function PortfolioFooter() {
                     text-ash/60
                   "
                 >
-                  MYIP // API
+                  LOCAL ONLY
                 </span>
 
               </div>
@@ -954,7 +928,7 @@ export function PortfolioFooter() {
                         "
                       />
 
-                      SCANNING SHADOW...
+                      SYSTEM ONLINE
 
                     </div>
 
@@ -1077,7 +1051,7 @@ export function PortfolioFooter() {
                           text-ash/60
                         "
                       >
-                        SHADOW NODE IDENTIFIED
+                        LOCAL STATUS
                       </span>
 
                       <span
@@ -1120,7 +1094,7 @@ export function PortfolioFooter() {
                       "
                     />
 
-                    SHADOW SIGNAL UNAVAILABLE
+                    LOCAL STATUS AVAILABLE
 
                   </div>
 
