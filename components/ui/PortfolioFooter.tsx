@@ -49,10 +49,13 @@ type VisitorNode = {
   cc: string;
 };
 
-function getLocalVisitorNode(): VisitorNode | null {
-  return null;
+function getLocalVisitorNode(): VisitorNode {
+  return {
+    ip: '',
+    country: '',
+    cc: '',
+  };
 }
-
 
 /* ============================================================================
    FOOTER
@@ -68,7 +71,6 @@ export function PortfolioFooter() {
 
   const nodeScanning = false;
   const visitorNode = getLocalVisitorNode();
-
 
   return (
     <footer
@@ -767,7 +769,7 @@ export function PortfolioFooter() {
           </div>
 
 
-          {/* System status */}
+          {false && (
           <div>
 
             <p
@@ -1105,6 +1107,7 @@ export function PortfolioFooter() {
             </motion.div>
 
           </div>
+          )}
 
 
           {/* Return */}

@@ -75,7 +75,7 @@ flowchart TD
     subgraph APP["Next.js 14 App Router"]
         L["layout.tsx<br/>Metadata · JSON-LD · Fonts"]
         P["page.tsx<br/>Main page + lightweight loader"]
-        SEO["robots.ts · sitemap.ts<br/>manifest.ts · icon.tsx<br/>opengraph-image.tsx"]
+        SEO["robots.ts · sitemap.ts<br/>manifest.ts · opengraph-image.tsx"]
     end
 
     subgraph COMPONENTS["components/"]
@@ -146,7 +146,6 @@ shadow-portfolio/
 │   ├── manifest.ts             # Web app manifest
 │   ├── robots.ts               # Robots rules + sitemap declaration
 │   ├── sitemap.ts              # XML sitemap
-│   ├── icon.tsx                # Generated 48×48 crawler-friendly icon
 │   ├── opengraph-image.tsx     # Generated 1200×630 social preview
 ├── components/
 │   ├── game/                   # Interactive canvas games (lazy-loaded)
@@ -239,7 +238,7 @@ The site ships a complete, hand-tuned SEO stack:
 - Canonical URL + `en-IN` language metadata
 - Google verification support &amp; optional **Bing Webmaster** verification
 - `robots.txt` with sitemap location + XML sitemap at `/sitemap.xml`
-- Generated favicon at `/icon` + Open Graph image at `/opengraph-image`
+- Portrait favicon at `/perfect.png` + Open Graph image at `/opengraph-image`
 - Twitter large-image card metadata
 - **Person, WebSite &amp; portfolio-section JSON-LD** schema
 
@@ -285,7 +284,7 @@ Configure environment variables in the Vercel project settings before the produc
 ```text
 /robots.txt          /sitemap.xml
 /manifest.webmanifest
-/icon                /opengraph-image
+/perfect.png         /opengraph-image
 ```
 
 ---
