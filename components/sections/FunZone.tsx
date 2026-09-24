@@ -6,10 +6,28 @@ import {
   useMemo,
   useState,
 } from 'react';
+import dynamic from 'next/dynamic';
 
-import { ShadowHunterGame } from '../game/ShadowHunterGame';
-import NeonResonanceGame from '@/components/game/NeonResonanceGame';
-import { VoidRequiemGame } from '@/components/game/Voidrequiemgame';
+const ShadowHunterGame = dynamic(
+  () =>
+    import('../game/ShadowHunterGame').then(
+      (module) => ({ default: module.ShadowHunterGame }),
+    ),
+  { ssr: false },
+);
+
+const NeonResonanceGame = dynamic(
+  () => import('@/components/game/NeonResonanceGame'),
+  { ssr: false },
+);
+
+const VoidRequiemGame = dynamic(
+  () =>
+    import('@/components/game/Voidrequiemgame').then(
+      (module) => ({ default: module.VoidRequiemGame }),
+    ),
+  { ssr: false },
+);
 
 
 /* -------------------------------------------------------------------------- */

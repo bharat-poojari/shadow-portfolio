@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import { SmoothScrollProvider } from '@/components/scene/SmoothScrollProvider';
 import { NavigationHUD } from '@/components/ui/NavigationHUD';
@@ -11,10 +12,25 @@ import { Hero } from '@/components/sections/Hero';
 import { About } from '@/components/sections/About';
 import { Skills } from '@/components/sections/Skills';
 import { Projects } from '@/components/sections/Projects';
-import { FunZone } from '@/components/sections/FunZone';
 import { Education } from '@/components/sections/Education';
 import { Certifications } from '@/components/sections/Certifications';
 import { Contact } from '@/components/sections/Contact';
+
+const FunZone = dynamic(
+  () =>
+    import('@/components/sections/FunZone').then((module) => ({
+      default: module.FunZone,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="min-h-[55vh] w-full bg-void"
+        aria-label="Loading interactive fun zone"
+      />
+    ),
+  },
+);
 
 /* ============================================================================
    FIRST VISIT PORTAL

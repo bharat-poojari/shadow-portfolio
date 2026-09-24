@@ -16,8 +16,8 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: 'en-IN',
     icons: [
       {
-        src: `${new URL(siteUrl).origin}/perfect.png`,
-        sizes: '1230x1278',
+        src: `${new URL(siteUrl).origin}/favicon.png`,
+        sizes: '256x256',
         type: 'image/png',
         purpose: 'any',
       },

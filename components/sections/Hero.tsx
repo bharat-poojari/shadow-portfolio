@@ -5,13 +5,30 @@ import {
   useRef,
   useState,
 } from 'react';
-
-import { HeroCanvas } from '../scene/HeroCanvas';
+import dynamic from 'next/dynamic';
 
 import { HeroArtifacts } from './../hero/HeroArtifacts';
 
 import { profile } from '@/lib/content';
-import { ShadowHunterGame } from '../game/ShadowHunterGame';
+
+const HeroCanvas = dynamic(
+  () =>
+    import('../scene/HeroCanvas').then((module) => ({
+      default: module.HeroCanvas,
+    })),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+
+const ShadowHunterGame = dynamic(
+  () =>
+    import('../game/ShadowHunterGame').then(
+      (module) => ({ default: module.ShadowHunterGame }),
+    ),
+  { ssr: false },
+);
 const socials = [
   {
     label: 'GitHub',
@@ -81,16 +98,15 @@ const socials = [
 ];
 
 export function Hero() {
-
-const [shadowHunterOpen, setShadowHunterOpen] =
-  useState(false);
+  const [shadowHunterOpen, setShadowHunterOpen] =
+    useState(false);
   const [hoveredSocial, setHoveredSocial] =
     useState<string | null>(null);
-
+  const [canvasVisible, setCanvasVisible] =
+    useState(true);
   const [pressed, setPressed] = useState(false);
 
-  const heroRef =
-    useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
   /*
    * ============================================================
@@ -107,9 +123,30 @@ const [shadowHunterOpen, setShadowHunterOpen] =
 
     let raf = 0;
 
+    let isVisible = true;
+
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        const nextVisible = entry.isIntersecting;
+        isVisible = nextVisible;
+        setCanvasVisible(nextVisible);
+
+        if (!nextVisible) {
+          cancelAnimationFrame(raf);
+        }
+      },
+      { threshold: 0.01 },
+    );
+
+    visibilityObserver.observe(hero);
+
     const handlePointerMove = (
       event: PointerEvent,
     ) => {
+      if (!isVisible) {
+        return;
+      }
+
       cancelAnimationFrame(raf);
 
       raf = requestAnimationFrame(() => {
@@ -174,6 +211,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
 
     return () => {
       cancelAnimationFrame(raf);
+      visibilityObserver.disconnect();
 
       hero.removeEventListener(
         'pointermove',
@@ -210,7 +248,7 @@ const [shadowHunterOpen, setShadowHunterOpen] =
         {/* =====================================================
             WORLD
             ===================================================== */}
-<HeroCanvas />
+        {canvasVisible && <HeroCanvas />}
 
         {/* =====================================================
             REAL DATA ARTIFACT SYSTEM
@@ -888,10 +926,12 @@ const [shadowHunterOpen, setShadowHunterOpen] =
         </a>
       </section>
 
-<ShadowHunterGame
-  open={shadowHunterOpen}
-  onClose={() => setShadowHunterOpen(false)}
-/>
+{shadowHunterOpen && (
+  <ShadowHunterGame
+    open
+    onClose={() => setShadowHunterOpen(false)}
+  />
+)}
 
       {/* =======================================================
           HERO ANIMATION SYSTEM

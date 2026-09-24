@@ -4,6 +4,7 @@ import './globals.css';
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bharat-poojari.vercel.app';
 const siteName = 'Bharat Chandru Poojari Portfolio';
 const iconPath = '/perfect.png';
+const faviconPath = '/favicon.png';
 
 // Fonts are loaded via standard <link> tags in the <head> below rather than
 // next/font/google. next/font fetches font files at *build time*, which
@@ -63,9 +64,9 @@ export const metadata: Metadata = {
     images: [iconPath],
   },
   icons: {
-    icon: [{ url: iconPath, type: 'image/png', sizes: '1230x1278' }],
-    apple: [{ url: iconPath, type: 'image/png', sizes: '1230x1278' }],
-    shortcut: [{ url: iconPath, type: 'image/png' }],
+    icon: [{ url: faviconPath, type: 'image/png', sizes: '256x256' }],
+    apple: [{ url: faviconPath, type: 'image/png', sizes: '256x256' }],
+    shortcut: [{ url: faviconPath, type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
   verification: {
@@ -152,8 +153,8 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        <link rel="icon" href={iconPath} type="image/png" sizes="1230x1278" />
-        <link rel="apple-touch-icon" href={iconPath} />
+        <link rel="icon" href={faviconPath} type="image/png" sizes="256x256" />
+        <link rel="apple-touch-icon" href={faviconPath} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

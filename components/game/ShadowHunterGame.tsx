@@ -3032,12 +3032,15 @@ export function ShadowHunterGame({
         const rect =
           canvas.getBoundingClientRect();
 
-        const dpr =
-          Math.min(
-            window.devicePixelRatio ||
-              1,
-            2,
-          );
+        const isMobile =
+          window.matchMedia(
+            '(max-width: 768px)',
+          ).matches;
+
+        const dpr = Math.min(
+          window.devicePixelRatio || 1,
+          isMobile ? 1.25 : 1.75,
+        );
 
         canvas.width =
           Math.max(

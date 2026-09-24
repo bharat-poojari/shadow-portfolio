@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 
-// Design tokens for "The Living Chronicle"
+// Design tokens for "Shadow Portfolio"
 // Palette rationale (see /docs/design-notes.md):
 // - void:     near-black with a faint violet undertone, not pure #000 — the world's base state
 // - ember:    desaturated crimson — projects / energy / action states

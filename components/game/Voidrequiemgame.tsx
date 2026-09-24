@@ -2337,7 +2337,8 @@ boss.stateTimer = 0;
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.6);
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
     };
