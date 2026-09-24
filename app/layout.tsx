@@ -3,7 +3,7 @@ import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bharat-poojari.vercel.app';
 const siteName = 'Bharat Chandru Poojari Portfolio';
-const iconPath = '/perfect.png';
+const previewPath = '/opengraph-image';
 const faviconPath = '/favicon.png';
 
 // Fonts are loaded via standard <link> tags in the <head> below rather than
@@ -54,17 +54,25 @@ export const metadata: Metadata = {
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Explore the work, skills, projects, education, and certifications of Full Stack Developer Bharat Chandru Poojari.',
-    images: [{ url: iconPath, width: 1230, height: 1278, alt: 'Bharat Chandru Poojari' }],
+    images: [{
+      url: previewPath,
+      width: 1200,
+      height: 630,
+      alt: 'Bharat Chandru Poojari | Full Stack Developer',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bharat Chandru Poojari | Full Stack Developer',
     description:
       'Full Stack Developer specializing in Node.js, React.js, and AI integration.',
-    images: [iconPath],
+    images: [previewPath],
   },
   icons: {
-    icon: [{ url: faviconPath, type: 'image/png', sizes: '256x256' }],
+    icon: [
+      { url: '/icon', type: 'image/png', sizes: '48x48' },
+      { url: faviconPath, type: 'image/png', sizes: '256x256' },
+    ],
     apple: [{ url: faviconPath, type: 'image/png', sizes: '256x256' }],
     shortcut: [{ url: faviconPath, type: 'image/png' }],
   },
@@ -98,6 +106,7 @@ const structuredData = {
       jobTitle: 'Full Stack Developer',
       description: metadata.description,
       url: siteUrl,
+      image: `${siteUrl}${previewPath}`,
       email: 'mailto:bharatp0316@gmail.com',
       address: {
         '@type': 'PostalAddress',
@@ -118,6 +127,7 @@ const structuredData = {
       url: siteUrl,
       description: metadata.description,
       author: { '@id': `${siteUrl}/#person` },
+      image: `${siteUrl}${previewPath}`,
       inLanguage: 'en-IN',
     },
     {

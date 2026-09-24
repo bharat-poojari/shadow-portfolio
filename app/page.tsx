@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { SmoothScrollProvider } from '@/components/scene/SmoothScrollProvider';
@@ -127,6 +127,7 @@ function FirstVisitPortal() {
 
   const [progress, setProgress] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(5);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const [portalData, setPortalData] = useState<PortalData>({
     ip: 'SCANNING...',
@@ -235,6 +236,7 @@ function FirstVisitPortal() {
      */
     const startTime = performance.now();
     const duration = 5000;
+    let lastSecond = 5;
 
     let animationFrame = 0;
 
@@ -244,14 +246,20 @@ function FirstVisitPortal() {
       const elapsed = now - startTime;
       const ratio = Math.min(elapsed / duration, 1);
 
-      setProgress(ratio * 100);
+      progressBarRef.current?.style.setProperty(
+        '--portal-progress',
+        `${ratio * 100}%`,
+      );
 
       const remaining = Math.max(
         0,
         Math.ceil((duration - elapsed) / 1000),
       );
 
-      setSecondsLeft(remaining);
+      if (remaining !== lastSecond) {
+        lastSecond = remaining;
+        setSecondsLeft(remaining);
+      }
 
       if (ratio >= 1) {
         completePortal();
@@ -848,6 +856,7 @@ function FirstVisitPortal() {
                 "
               >
                 <div
+                  ref={progressBarRef}
                   className="
                     h-full
                     origin-left
@@ -858,7 +867,7 @@ function FirstVisitPortal() {
                     ease-linear
                   "
                   style={{
-                    width: `${progress}%`,
+                    width: 'var(--portal-progress, 0%)',
                   }}
                 />
               </div>

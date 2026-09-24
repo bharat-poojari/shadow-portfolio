@@ -124,6 +124,13 @@ export function Hero() {
     let raf = 0;
 
     let isVisible = true;
+    let heroRect = hero.getBoundingClientRect();
+
+    const resizeObserver = new ResizeObserver(() => {
+      heroRect = hero.getBoundingClientRect();
+    });
+
+    resizeObserver.observe(hero);
 
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
@@ -150,16 +157,13 @@ export function Hero() {
       cancelAnimationFrame(raf);
 
       raf = requestAnimationFrame(() => {
-        const rect =
-          hero.getBoundingClientRect();
-
         const x =
-          (event.clientX - rect.left) /
-          rect.width;
+          (event.clientX - heroRect.left) /
+          heroRect.width;
 
         const y =
-          (event.clientY - rect.top) /
-          rect.height;
+          (event.clientY - heroRect.top) /
+          heroRect.height;
 
         const px = (x - 0.5) * 2;
         const py = (y - 0.5) * 2;
@@ -199,29 +203,20 @@ export function Hero() {
       );
     };
 
-    hero.addEventListener(
-      'pointermove',
-      handlePointerMove,
-    );
+    hero.addEventListener('pointermove', handlePointerMove, {
+      passive: true,
+    });
 
-    hero.addEventListener(
-      'pointerleave',
-      handlePointerLeave,
-    );
+    hero.addEventListener('pointerleave', handlePointerLeave);
 
     return () => {
       cancelAnimationFrame(raf);
       visibilityObserver.disconnect();
+      resizeObserver.disconnect();
 
-      hero.removeEventListener(
-        'pointermove',
-        handlePointerMove,
-      );
+      hero.removeEventListener('pointermove', handlePointerMove);
 
-      hero.removeEventListener(
-        'pointerleave',
-        handlePointerLeave,
-      );
+      hero.removeEventListener('pointerleave', handlePointerLeave);
     };
   }, []);
 

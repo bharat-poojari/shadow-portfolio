@@ -20,6 +20,13 @@ body {
   font-family: var(--font-body);
 }
 
+/* Keep below-the-fold sections out of the render pipeline until needed. */
+main > section:not(#hero),
+main > #fun-zone {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
+
 ::selection {
   background-color: #6c5ce0;
   color: #08070b;
