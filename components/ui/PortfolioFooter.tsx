@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import {
   ArrowUp,
   ChevronRight,
@@ -45,75 +43,31 @@ const reveal: Variants = {
   },
 };
 
+type VisitorNode = {
+  ip: string;
+  country: string;
+  cc: string;
+};
+
+function getLocalVisitorNode(): VisitorNode | null {
+  return null;
+}
+
 
 /* ============================================================================
    FOOTER
 ============================================================================ */
 
 export function PortfolioFooter() {
-  const reduceMotion =
-    useReducedMotion();
+  const reduceMotion = useReducedMotion();
 
 
   const currentYear =
     new Date().getFullYear();
 
 
-  type VisitorNode = {
-    ip: string;
-    country: string;
-    cc: string;
-  };
-
-
-  const [visitorNode, setVisitorNode] =
-    useState<VisitorNode | null>(null);
-
-  const [nodeScanning, setNodeScanning] =
-    useState(true);
-
-
-  useEffect(() => {
-    let mounted = true;
-
-    const detectNode = async () => {
-      try {
-        const response = await fetch(
-  '/api/visitor-node',
-  {
-    cache: 'no-store',
-  },
-);
-
-        if (!response.ok) {
-          throw new Error(
-            'Node detection failed',
-          );
-        }
-
-        const data: VisitorNode =
-          await response.json();
-
-        if (mounted) {
-          setVisitorNode(data);
-        }
-      } catch {
-        if (mounted) {
-          setVisitorNode(null);
-        }
-      } finally {
-        if (mounted) {
-          setNodeScanning(false);
-        }
-      }
-    };
-
-    detectNode();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const nodeScanning = false;
+  const visitorNode = getLocalVisitorNode();
 
 
   return (

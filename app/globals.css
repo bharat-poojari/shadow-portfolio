@@ -56,3 +56,13 @@ main > #fun-zone {
   letter-spacing: 0.35em;
   text-transform: uppercase;
 }
+
+@keyframes pageLoader {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
+}
