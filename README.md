@@ -1,324 +1,307 @@
-
-
-&nbsp;
-
-&nbsp;
+<div align="center">
 
 # ⚡ BHARAT CHANDRU POOJARI
 
 ### Full Stack Developer · Sirsi, Karnataka, India
 
-**"An immersive, performance-focused developer portfolio — a living system archive."**
+**"An immersive, performance-focused developer portfolio — inspired by the Shadow Monarch."**
 
+<p>
+<img alt="Next.js" src="https://img.shields.io/badge/Next.js-14.2-15181D?style=flat-square&labelColor=15181D&color=56E1C9">
+<img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.5-15181D?style=flat-square&labelColor=15181D&color=56E1C9">
+<img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-3.4-15181D?style=flat-square&labelColor=15181D&color=56E1C9">
+<img alt="Deployed on Vercel" src="https://img.shields.io/badge/deploy-Vercel-15181D?style=flat-square&labelColor=15181D&color=56E1C9">
+<img alt="GitHub stars" src="https://img.shields.io/github/stars/bharat-poojari/shadow-portfolio?style=flat-square&label=stars&labelColor=15181D&color=56E1C9">
+<img alt="Last commit" src="https://img.shields.io/github/last-commit/bharat-poojari/shadow-portfolio?style=flat-square&label=last%20commit&labelColor=15181D&color=56E1C9">
+</p>
 
+<p>
+<a href="https://bharat-poojari.vercel.app"><strong>Live Demo</strong></a> ·
+<a href="https://github.com/bharat-poojari/shadow-portfolio"><strong>Source</strong></a> ·
+<a href="public/resume.pdf"><strong>Resume</strong></a> ·
+<a href="https://github.com/bharat-poojari/shadow-portfolio/issues"><strong>Issues</strong></a>
+</p>
 
----
+</div>
 
+## Contents
 
+<table>
+<tr>
+<td valign="top" width="33%">
 
-&nbsp;
+- [Why This Project Exists](#why-this-project-exists)
+- [Project Snapshot](#project-snapshot)
+- [Project Status](#project-status)
+- [System Experience](#system-experience)
+- [Architecture](#architecture)
 
-&nbsp;
+</td>
+<td valign="top" width="33%">
 
----
+- [Motion & Graphics](#motion--graphics)
+- [Accessibility](#accessibility)
+- [Design System](#design-system)
+- [Featured Work](#featured-work)
+- [Content Architecture](#content-architecture)
 
-## 🌌 About The Project
+</td>
+<td valign="top" width="33%">
 
-Not just a portfolio — a **cinematic experience**. Built as a dark, atmospheric "living system archive," this site presents my professional experience, skills, projects, education, certifications, and interactive experiments through a fully immersive interface.
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+- [Roadmap](#roadmap)
+- [Contact · License](#contact)
 
-```text
-> booting shadow-portfolio...
-> initializing immersive mode....... [OK]
-> pointer parallax................. [OK]
-> interactive cannon sequence...... [ARMED]
-> smooth scroll (Lenis)............ [ACTIVE]
-> fun zone games................... [LOADED ON DEMAND]
-> status: OPERATIONAL ⚡
-```
+</td>
+</tr>
+</table>
 
-### ✨ Key Highlights
+<br>
 
+## Why This Project Exists
 
-|     | Feature                                                                         |
-| --- | ------------------------------------------------------------------------------- |
-| 🎬  | Cinematic dark visual system with a lightweight startup loader                  |
-| 🎯  | Hero interaction with pointer parallax + an interactive cannon sequence         |
-| 🕹️ | **Fun Zone** — browser games loaded on demand via dynamic imports               |
-| 🧩  | Project showcase with live filtering and project links                          |
-| 🌊  | Buttery smooth scrolling with Lenis, motion with Framer Motion &amp; GSAP       |
-| 🧊  | 3D and canvas graphics powered by Three.js / React Three Fiber / Drei           |
-| 📄  | Structured, centralized content driven from `lib/content.ts`                    |
-| 🔍  | Full SEO suite: JSON-LD, sitemap, robots, OG image, favicon                     |
-| ⚡   | Performance-conscious rendering with dynamic imports &amp; `content-visibility` |
-| ♿   | Reduced-motion support built in                                                 |
-| 📱  | Responsive across desktop, tablet, and mobile                                   |
+This isn't a static resume page — it's a personal portfolio built as a **dark, atmospheric "living archive,"** themed around the Shadow Monarch. Sections aren't just labeled "About" or "Skills" — they're framed as chapters (*The Awakening*, *The Origin*, *The Codex*, *The Campaigns*...), and the site's design tokens (documented directly in `tailwind.config.ts`) carry names — `void`, `ember`, `spectral`, `signal` — tied to what each color is used for rather than generic Tailwind defaults.
 
+The intent: demonstrate frontend engineering (motion, 3D, accessibility, content architecture) through a portfolio that's actually interesting to look at, without pretending the interactive layer is more finished than it is.
 
----
+<br>
 
-## 🖼️ Screenshots
+## Project Snapshot
 
+| Area | Implementation |
+| :-- | :-- |
+| Framework | Next.js `14.2.35` (App Router) |
+| Language | TypeScript `5.5.4` |
+| UI | React `18.3.1` + Tailwind CSS `3.4.7` |
+| Motion | Framer Motion `13.1.0`, GSAP `3.12.5` |
+| Smooth scrolling | Lenis `1.1.9` |
+| 3D / Graphics | Three.js `0.166.1`, React Three Fiber `8.16.8`, Drei `9.122.0` |
+| State | Zustand `4.5.4` |
+| Icons | Iconify (`@iconify/react`), Lucide React |
+| Content | Centralized in `lib/content.ts` |
+| Deployment | Vercel |
+| CI / Releases | None configured — deployed directly from `main` |
+| License | [MIT](LICENSE) |
 
+<br>
 
-**Live experience → [bharat-poojari.vercel.app](https://bharat-poojari.vercel.app)**
+## Project Status
 
-> 🎥 The site is deeply interactive — parallax, motion, and the cannon sequence can only be fully appreciated live. Visit the deployment for the real thing.
+Content is also incomplete in one spot on purpose: the resume lists six independently built applications, but only five are currently named (Furniqo, OffyAI, PrimeNews, CodePolish, and this portfolio). The sixth slot is deliberately left reserved rather than filled with a placeholder.
 
+<br>
 
+## System Experience
 
----
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart TD
-    subgraph APP["Next.js 14 App Router"]
-        L["layout.tsx<br/>Metadata · JSON-LD · Fonts"]
-        P["page.tsx<br/>Main page + lightweight loader"]
-        SEO["robots.ts · sitemap.ts<br/>manifest.ts · opengraph-image.tsx"]
-    end
-
-    subgraph COMPONENTS["components/"]
-        SCENE["scene/<br/>Hero interaction · smooth scroll"]
-        HERO["hero/<br/>Hero visual artifacts"]
-        SECTIONS["sections/<br/>Portfolio sections + Fun Zone"]
-        UI["ui/<br/>Navigation + footer"]
-        GAME["game/<br/>Canvas games (lazy-loaded)"]
-    end
-
-    subgraph INFRA["Motion & Graphics"]
-        FM["Framer Motion + GSAP"]
-        LENIS["Lenis smooth scroll"]
-        R3F["Three.js · R3F · Drei"]
-    end
-
-    CONTENT["lib/content.ts<br/>Profile · Skills · Projects · Resume"]
-
-    L --> P
-    P --> SCENE
-    P --> SECTIONS
-    SCENE --> HERO
-    SCENE --> LENIS
-    SECTIONS --> GAME
-    SECTIONS --> FM
-    GAME --> R3F
-    SECTIONS --> CONTENT
-    P --> SEO
-```
-
-### 📦 Dependency Orbit
+`page.tsx` assembles the site as a single sequence:
 
 ```mermaid
-mindmap
-  root((shadow-portfolio))
-    Framework
-      Next.js 14 App Router
-      TypeScript
-      React 18
-    Styling
-      Tailwind CSS
-    Motion
-      Framer Motion
-      GSAP
-      Lenis
-    3D & Graphics
-      Three.js
-      React Three Fiber
-      React Three Drei
-      Canvas APIs
-    Icons
-      Lucide React
-      Iconify
-    Deploy
-      Vercel
+flowchart LR
+    A["01 — The Awakening<br/><sub>Hero.tsx</sub>"] --> B["02 — The Origin<br/><sub>About.tsx</sub>"]
+    B --> C["03 — The Codex<br/><sub>Skills.tsx</sub>"]
+    C --> D["04 — The Campaigns<br/><sub>Projects.tsx</sub>"]
+    D --> E["05 — The Training Arc<br/><sub>Education.tsx</sub>"]
+    E --> F["06 — The Artifact Vault<br/><sub>Certifications.tsx</sub>"]
+    F --> G["07 — The Next Arc<br/><sub>Contact.tsx</sub>"]
 ```
 
----
+<br>
 
-## 🗺️ Project Map
+## Architecture
+
+```mermaid
+flowchart TB
+    L["layout.tsx<br/><sub>root layout, font loading</sub>"] --> P["page.tsx<br/><sub>assembles the section sequence</sub>"]
+    P --> SCENE["components/scene/<br/><sub>SmoothScrollProvider · ParticleField · HeroCanvas</sub>"]
+    P --> SECTIONS["components/sections/<br/><sub>7 numbered sections</sub>"]
+    P --> UI["components/ui/<br/><sub>NavigationHUD</sub>"]
+    SECTIONS --> CONTENT["lib/content.ts<br/><sub>single source of truth</sub>"]
+
+    style L fill:#15181D,stroke:#262B33,color:#E9EDF1
+    style P fill:#15181D,stroke:#56E1C9,color:#E9EDF1
+    style CONTENT fill:#15181D,stroke:#56E1C9,color:#E9EDF1
+```
+
+**Fonts** are loaded in `layout.tsx`: Space Grotesk (display), IBM Plex Sans (body), JetBrains Mono (data / HUD labels).
+
+<br>
+
+## Motion & Graphics
+
+| Piece | Confirmed role |
+| :-- | :-- |
+| `SmoothScrollProvider.tsx` | Wraps the page in Lenis inertial scrolling — skipped entirely when the visitor prefers reduced motion |
+| `ParticleField.tsx` | A reusable React Three Fiber particle primitive |
+| `HeroCanvas.tsx` | The WebGL layer behind the hero ("Awakening") section |
+| `NavigationHUD.tsx` | Persistent floating section navigation |
+| Framer Motion, GSAP | Present as dependencies; used for UI-level motion today |
+
+> [!NOTE]
+> GSAP + ScrollTrigger–driven per-section timelines, and expanding `HeroCanvas` into a persistent scene with its own camera rig, are listed in the project's roadmap rather than shipped yet — see [Roadmap](#roadmap).
+
+<br>
+
+## Accessibility
+
+- `useReducedMotion.ts` — a shared hook used to gate motion behavior across the app
+- Lenis smooth scrolling is explicitly skipped under `prefers-reduced-motion`
+- `globals.css` defines reduced-motion base rules alongside the design tokens
+
+<br>
+
+## Design System
+
+Color and type decisions are documented directly as comments in `tailwind.config.ts` rather than left implicit:
+
+| Token | Value | Role |
+| :-- | :-- | :-- |
+| `void` | `#08070B` | Near-black base — the world's default state (not pure black) |
+| `ember` | `#B8452E` | Desaturated crimson — projects / energy / action states |
+| `spectral` | `#6C5CE0` | Muted violet — AI / system UI / skills-codex states |
+| `signal` | `#D9A441` | Warm gold — certifications / verified artifacts |
+| `bone` | `#E8E4DD` | Primary text (warm off-white, not pure white) |
+| `ash` | `#6B6874` | Secondary text, borders, inactive HUD states |
+
+Each token also ships `dim` / `bright` variants for state changes. A custom `cinematic` easing curve (`cubic-bezier(0.16, 1, 0.3, 1)`) and a `widest2` (0.35em) letter-spacing utility are defined for HUD-style typography. Dark mode is class-based (`darkMode: 'class'`).
+
+<br>
+
+## Featured Work
+
+The Projects section ("The Campaigns") is sourced from the same resume data as the rest of the site:
+
+`Furniqo` · `OffyAI` · `PrimeNews` · `CodePolish` · this portfolio itself
+
+*(A sixth project slot exists in the content model and is reserved rather than filled — see [Project Status](#project-status).)*
+
+<br>
+
+## Content Architecture
+
+```mermaid
+flowchart LR
+    C["lib/content.ts<br/><sub>single source of truth</sub>"] --> S["7 section components"]
+```
+
+Centralizing profile, skills, project, education, and certification content in one file keeps section components focused on presentation rather than data, and makes updates a single-file change.
+
+<br>
+
+## Project Structure
 
 ```text
-shadow-portfolio/
-├── app/
-│   ├── layout.tsx              # Global metadata, JSON-LD, fonts, document shell
-│   ├── page.tsx                # Main portfolio page + lightweight loader
-│   ├── globals.css             # Tailwind layers & global performance styles
-│   ├── manifest.ts             # Web app manifest
-│   ├── robots.ts               # Robots rules + sitemap declaration
-│   ├── sitemap.ts              # XML sitemap
-│   ├── opengraph-image.tsx     # Generated 1200×630 social preview
-├── components/
-│   ├── game/                   # Interactive canvas games (lazy-loaded)
-│   ├── hero/                   # Hero visual artifacts
-│   ├── scene/                  # Hero interaction & smooth-scroll infra
-│   ├── sections/               # Portfolio sections + Fun Zone
-│   └── ui/                     # Navigation & footer
-├── lib/
-│   ├── content.ts              # All portfolio content lives here
-│   ├── useCanvasVisibility.ts  # IntersectionObserver visibility helper
-│   └── useReducedMotion.ts     # Reduced-motion preference hook
-└── public/
-    ├── favicon.png             # Static favicon + Apple touch icon
-    ├── perfect.png             # Portfolio artwork / portrait
-    ├── resume.pdf              # Downloadable resume
-    └── google*.html            # Google Search Console verification
+app/
+├── layout.tsx        # Root layout, font loading (Space Grotesk / IBM Plex Sans / JetBrains Mono)
+├── page.tsx          # Assembles the section sequence (see System Experience)
+└── globals.css       # Design tokens, reduced-motion base rules
+
+components/
+├── scene/
+│   ├── SmoothScrollProvider.tsx   # Lenis inertial scrolling (skipped under reduced motion)
+│   ├── ParticleField.tsx          # Reusable R3F particle primitive
+│   └── HeroCanvas.tsx             # Hero / "Awakening" WebGL layer
+├── ui/
+│   └── NavigationHUD.tsx          # Persistent floating section nav
+└── sections/
+    ├── Hero.tsx             # 01 — The Awakening
+    ├── About.tsx            # 02 — The Origin
+    ├── Skills.tsx           # 03 — The Codex
+    ├── Projects.tsx         # 04 — The Campaigns
+    ├── Education.tsx        # 05 — The Training Arc
+    ├── Certifications.tsx   # 06 — The Artifact Vault
+    └── Contact.tsx          # 07 — The Next Arc
+
+lib/
+├── content.ts             # Single source of truth for all resume-grounded content
+└── useReducedMotion.ts    # Shared accessibility hook
+
+public/
+├── favicon assets
+└── resume.pdf
 ```
 
----
+<br>
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Requirements
 
+`Node.js 18.17+` · `npm 9+`
 
-| Requirement | Version |
-| ----------- | ------- |
-| Node.js     | ≥ 18.17 |
-| npm         | ≥ 9     |
-
-
-### Installation
+### Install & run
 
 ```bash
 git clone https://github.com/bharat-poojari/shadow-portfolio.git
 cd shadow-portfolio
 npm install
-```
-
-### ⚙️ Environment Variables
-
-Create `.env.local` when using a custom domain or Bing verification:
-
-```env
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-BING_SITE_VERIFICATION=your-bing-verification-token
-```
-
-> `NEXT_PUBLIC_SITE_URL` drives the canonical URL, Open Graph metadata, JSON-LD, sitemap, robots file, and manifest. Falls back to `https://bharat-poojari.vercel.app` when unset.
-
-### Run locally
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in a browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-### 🧰 Scripts
+### Scripts
 
-
-| Command         | Purpose                                    |
-| --------------- | ------------------------------------------ |
-| `npm run dev`   | Start the development server               |
-| `npm run build` | Create and validate the production build   |
+| Command | Purpose |
+| :-- | :-- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Production build |
 | `npm run start` | Start the production server after building |
-| `npm run lint`  | Run the Next.js lint command               |
+| `npm run lint` | Run `next lint` |
 
+<br>
 
----
+## Deployment
 
-## ⚡ Performance Engineering
-
-This project treats performance as a first-class feature:
-
-- 🎮 **Games lazy-loaded** with client-only dynamic imports — zero impact on the initial page bundle
-- ⚡ **Lightweight startup loader** disappears after hydration without blocking the page
-- 📐 **Pointer parallax** caches layout measurements with `ResizeObserver`
-- 👁️ **Below-the-fold sections** use `content-visibility: auto` to defer expensive rendering
-- 🖼️ **Hero uses a static background** instead of continuous video decoding
-- 🦾 **Reduced-motion preferences** disable continuous animation where appropriate
-- ✅ **Production verified** with `npm run build`
-
----
-
-## 🔍 SEO &amp; Social Preview
-
-The site ships a complete, hand-tuned SEO stack:
-
-- Canonical URL + `en-IN` language metadata
-- Google verification support &amp; optional **Bing Webmaster** verification
-- `robots.txt` with sitemap location + XML sitemap at `/sitemap.xml`
-- Portrait favicon at `/perfect.png` + Open Graph image at `/opengraph-image`
-- Twitter large-image card metadata
-- **Person, WebSite &amp; portfolio-section JSON-LD** schema
-
-### Post-deploy checklist
-
-- [ ] Set `NEXT_PUBLIC_SITE_URL` to the exact public domain in Vercel
-- [ ] Deploy the production build
-- [ ] Submit the sitemap in Google Search Console &amp; Bing Webmaster Tools
-- [ ] Use URL inspection to request indexing for the homepage
-- [ ] Validate the preview with social-platform debugging tools
-
-> Search engines control the final timing of favicon and preview updates — a successful deployment does not guarantee an immediate change in cached results.
-
----
-
-## ✏️ Content Updates
-
-Most portfolio content is centralized in [`lib/content.ts`](lib/content.ts). Update that file when changing:
-
-- Profile details
-- Skills &amp; technology groups
-- Featured projects and live links
-- Other project links
-- Education &amp; certification records
-- Contact information
-
-> Keep project links and personal details accurate before deploying.
-
----
-
-## 🌐 Deployment
-
-Configured for **Vercel** — deploy via dashboard or CLI:
+Deployed directly from `main` to **Vercel** — no CI workflow or tagged releases are configured yet.
 
 ```bash
 npm install -g vercel
-vercel        # preview deployment
-vercel --prod # production deployment
+vercel        # preview
+vercel --prod # production
 ```
 
-Configure environment variables in the Vercel project settings before the production deployment. Verify these endpoints after deployment:
+<br>
 
-```text
-/robots.txt          /sitemap.xml
-/manifest.webmanifest
-/perfect.png         /opengraph-image
-```
+## Roadmap
 
----
+**Cinematic engine** (per the project's own §18 / extension-point notes)
+- [ ] GSAP + ScrollTrigger timelines per section, mapped to scroll progress
+- [ ] `CinematicTransition` primitives: FadeThrough, SlashReveal, GlitchShift, ParticleDissolve, Morph, InkSpread, WorldShift
+- [ ] Expand `HeroCanvas` into a persistent scene with its own camera rig, so the 3D world carries across sections instead of resetting
 
-## 📬 Contact
+**Content**
+- [ ] Fill the reserved sixth project slot once details are available
+- [ ] Professional portrait, demo videos/GIFs
+- [ ] Additional project metrics and credential verification URLs
+- [ ] Personal logo / monogram
 
-For collaboration, project opportunities, or technical discussions:
+> [!NOTE]
+> Roadmap items are directional, not scheduled commitments.
 
+<br>
 
-|     | Channel   | Handle                                                                         |
-| --- | --------- | ------------------------------------------------------------------------------ |
-| 📧  | Email     | [bharatp0316@gmail.com](mailto:bharatp0316@gmail.com)                          |
-| 💻  | GitHub    | [bharat-poojari](https://github.com/bharat-poojari)                            |
-| 🔗  | LinkedIn  | [Bharat Chandru Poojari](https://www.linkedin.com/in/bharat-poojari-397618359) |
-| 📷  | Instagram | [bharat\_x\_16](https://www.instagram.com/bharat_x_16)                         |
-| 🌍  | Portfolio | [bharat-poojari.vercel.app](https://bharat-poojari.vercel.app)                 |
+## Contact
 
+<table>
+<tr><td>✉️ Email</td><td><a href="mailto:bharatp0316@gmail.com">bharatp0316@gmail.com</a></td></tr>
+<tr><td>💻 GitHub</td><td><a href="https://github.com/bharat-poojari">bharat-poojari</a></td></tr>
+<tr><td>🔗 LinkedIn</td><td><a href="https://www.linkedin.com/in/bharat-poojari-397618359">Bharat Chandru Poojari</a></td></tr>
+<tr><td>📷 Instagram</td><td><a href="https://www.instagram.com/bharat_x_16">bharat_x_16</a></td></tr>
+<tr><td>🌍 Portfolio</td><td><a href="https://bharat-poojari.vercel.app">bharat-poojari.vercel.app</a></td></tr>
+</table>
 
----
+<br>
 
-## 📜 License
+## License
 
-This repository does not currently declare a separate open-source license. **Contact the author** before reusing personal branding, portfolio content, artwork, or resume material.
+This project is licensed under the [MIT License](LICENSE).
 
----
+> The full license text is available in the repository root at [LICENSE](LICENSE).
 
+<br>
 
-
-### ⚡ Built with obsession by Bharat Chandru Poojari ⚡
-
-```text
-   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-  █  SYSTEM STATUS: ONLINE · 200 OK  █
-   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-```
-
-[**▲ Back to Top**](#-bharat-chandru-poojari)
+<div align="center">
+<sub>Bharat Chandru Poojari · Full Stack Developer · Sirsi, Karnataka, India</sub>
+</div>
