@@ -6,7 +6,7 @@ const siteName = 'Bharat Chandru Poojari Portfolio';
 const previewPath = '/opengraph-image';
 const faviconPath = '/perfect.png';
 const siteDescription =
-  'Bharat Chandru Poojari is a full-stack developer and BCA graduate in Sirsi, Karnataka, building with Node.js, Express.js, React.js, MongoDB, MySQL, and LLM integration.';
+  'Bharat Chandru Poojari is a full-stack developer and BCA graduate in Karnataka, building web apps with React, Node.js, MongoDB, and LLM integration.';
 
 // Fonts are loaded via standard <link> tags in the <head> below rather than
 // next/font/google. next/font fetches font files at *build time*, which
