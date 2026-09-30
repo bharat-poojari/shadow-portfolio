@@ -78,12 +78,6 @@ export const metadata: Metadata = {
     shortcut: [{ url: faviconPath, type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
-  verification: {
-    google: '8IsUEadK0DA_EArkB89dOJkUj0MMbVKmujCqq_FVUeE',
-    ...(process.env.BING_SITE_VERIFICATION
-      ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }
-      : {}),
-  },
   robots: {
     index: true,
     follow: true,
