@@ -774,6 +774,74 @@ export function Hero() {
                 →
               </span>
             </a>
+
+            <a
+              href="https://bharat-poojari.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                hero-enter
+                group
+                mt-4
+                flex
+                w-fit
+                max-w-full
+                items-center
+                gap-4
+                border
+                border-[#5FC6E8]/35
+                bg-black/35
+                px-4
+                py-3
+                text-left
+                backdrop-blur-md
+                transition-all
+                duration-300
+                hover:border-[#5FC6E8]/80
+                hover:bg-[#5FC6E8]/10
+                hover:shadow-[0_0_28px_rgba(95,198,232,0.14)]
+                focus-visible:outline
+                focus-visible:outline-2
+                focus-visible:outline-[#5FC6E8]
+              "
+              style={{
+                animationDelay: '1020ms',
+              }}
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#5FC6E8]/30 text-[#5FC6E8]">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M14 4h6v6M20 4l-9 9"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <span className="min-w-0">
+                <span className="block hud-label text-[9px] text-[#5FC6E8] sm:text-[10px]">
+                  VISIT MY OTHER PORTFOLIO
+                </span>
+                <span className="mt-1 block break-all font-mono text-xs text-bone transition-colors group-hover:text-white sm:text-sm">
+                  bharat-poojari.vercel.app
+                </span>
+              </span>
+            </a>
           </div>
         </div>
 
