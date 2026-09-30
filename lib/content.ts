@@ -115,7 +115,7 @@ export const projects: Project[] = [
       'Interactive motion, atmospheric 3D scene work, responsive layouts, and structured content built for a fast, accessible browsing experience.',
     ],
     githubUrl: 'https://github.com/bharat-poojari/shadow-portfolio',
-    liveUrl: 'https://bharat-poojari.vercel.app',
+    liveUrl: 'https://bharat-poojari-portfolio.vercel.app',
   },
 ];
 

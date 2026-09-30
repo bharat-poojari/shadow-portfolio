@@ -16,7 +16,7 @@
 </p>
 
 <p>
-<a href="https://bharat-poojari.vercel.app"><strong>Live Demo</strong></a> ·
+<a href="https://bharat-poojari-portfolio.vercel.app"><strong>Live Demo</strong></a> ·
 <a href="https://github.com/bharat-poojari/shadow-portfolio"><strong>Source</strong></a> ·
 <a href="public/resume.pdf"><strong>Resume</strong></a> ·
 <a href="https://github.com/bharat-poojari/shadow-portfolio/issues"><strong>Issues</strong></a>
@@ -289,7 +289,7 @@ vercel --prod # production
 <tr><td>💻 GitHub</td><td><a href="https://github.com/bharat-poojari">bharat-poojari</a></td></tr>
 <tr><td>🔗 LinkedIn</td><td><a href="https://www.linkedin.com/in/bharat-poojari-397618359">Bharat Chandru Poojari</a></td></tr>
 <tr><td>📷 Instagram</td><td><a href="https://www.instagram.com/bharat_x_16">bharat_x_16</a></td></tr>
-<tr><td>🌍 Portfolio</td><td><a href="https://bharat-poojari.vercel.app">bharat-poojari.vercel.app</a></td></tr>
+<tr><td>🌍 Portfolio</td><td><a href="https://bharat-poojari-portfolio.vercel.app">bharat-poojari-portfolio.vercel.app</a></td></tr>
 </table>
 
 <br>

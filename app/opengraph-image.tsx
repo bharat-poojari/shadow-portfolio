@@ -38,7 +38,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ color: '#6f6b69', display: 'flex', fontSize: 22 }}>
-          bharat-poojari.vercel.app
+          bharat-poojari-portfolio.vercel.app
         </div>
       </div>
     ),

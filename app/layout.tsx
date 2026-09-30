@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import { siteUrl } from '@/lib/site';
 import './globals.css';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bharat-poojari.vercel.app';
 const siteName = 'Bharat Chandru Poojari Portfolio';
 const previewPath = '/opengraph-image';
 const faviconPath = '/perfect.png';
+const siteDescription =
+  'Bharat Chandru Poojari is a full-stack developer and BCA graduate in Sirsi, Karnataka, building with Node.js, Express.js, React.js, MongoDB, MySQL, and LLM integration.';
 
 // Fonts are loaded via standard <link> tags in the <head> below rather than
 // next/font/google. next/font fetches font files at *build time*, which
@@ -19,15 +21,19 @@ export const metadata: Metadata = {
     default: 'Bharat Chandru Poojari | Full Stack Developer',
     template: '%s | Bharat Chandru Poojari',
   },
-  description:
-    'Bharat Chandru Poojari is a Full Stack Developer from Sirsi, Karnataka, specializing in Node.js, React.js, MongoDB, and AI integration.',
+  description: siteDescription,
   keywords: [
     'Bharat Chandru Poojari',
     'Bharat Poojari',
     'Full Stack Developer',
+    'Full Stack Developer in Sirsi',
+    'BCA Graduate',
     'Node.js Developer',
     'React.js Developer',
-    'AI Integration',
+    'Express.js Developer',
+    'MongoDB Developer',
+    'MySQL Developer',
+    'LLM Integration',
     'Web Developer in Karnataka',
     'Furniqo',
     'OffyAI',
@@ -52,8 +58,7 @@ export const metadata: Metadata = {
     url: '/',
     siteName,
     title: 'Bharat Chandru Poojari | Full Stack Developer',
-    description:
-      'Explore the work, skills, projects, education, and certifications of Full Stack Developer Bharat Chandru Poojari.',
+    description: siteDescription,
     images: [{
       url: previewPath,
       width: 1200,
@@ -64,8 +69,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Bharat Chandru Poojari | Full Stack Developer',
-    description:
-      'Full Stack Developer specializing in Node.js, React.js, and AI integration.',
+    description: siteDescription,
     images: [previewPath],
   },
   icons: {
@@ -101,7 +105,17 @@ const structuredData = {
       '@id': `${siteUrl}/#person`,
       name: 'Bharat Chandru Poojari',
       jobTitle: 'Full Stack Developer',
-      description: metadata.description,
+      description: siteDescription,
+      knowsAbout: [
+        'Full-stack web development',
+        'Node.js',
+        'Express.js',
+        'React.js',
+        'MongoDB',
+        'MySQL',
+        'Prompt engineering',
+        'Large language model integration',
+      ],
       url: siteUrl,
       image: `${siteUrl}${previewPath}`,
       email: 'mailto:bharatp0316@gmail.com',
@@ -122,7 +136,7 @@ const structuredData = {
       '@id': `${siteUrl}/#website`,
       name: 'Bharat Chandru Poojari Portfolio',
       url: siteUrl,
-      description: metadata.description,
+      description: siteDescription,
       author: { '@id': `${siteUrl}/#person` },
       image: `${siteUrl}${previewPath}`,
       inLanguage: 'en-IN',

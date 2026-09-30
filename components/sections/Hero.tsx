@@ -776,7 +776,7 @@ export function Hero() {
             </a>
 
             <a
-              href="https://bharat-poojari.vercel.app"
+              href="https://bharat-poojari-portfolio.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="
@@ -838,7 +838,7 @@ export function Hero() {
                   VISIT MY OTHER PORTFOLIO
                 </span>
                 <span className="mt-1 block break-all font-mono text-xs text-bone transition-colors group-hover:text-white sm:text-sm">
-                  bharat-poojari.vercel.app
+                  bharat-poojari-portfolio.vercel.app
                 </span>
               </span>
             </a>
