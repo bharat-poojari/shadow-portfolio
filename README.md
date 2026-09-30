@@ -32,6 +32,7 @@
 
 - [Why This Project Exists](#why-this-project-exists)
 - [Project Snapshot](#project-snapshot)
+- [Screenshots](#screenshots)
 - [Project Status](#project-status)
 - [System Experience](#system-experience)
 - [Architecture](#architecture)
@@ -84,6 +85,27 @@ The intent: demonstrate frontend engineering (motion, 3D, accessibility, content
 | Deployment | Vercel |
 | CI / Releases | None configured — deployed directly from `main` |
 | License | [MIT](LICENSE) |
+
+<br>
+
+## Screenshots
+
+<p align="center">
+<a href="public/perfect.png"><img src="public/perfect.png" alt="Portfolio favicon" width="72"></a>
+<br>
+<a href="public/perfect.png">Favicon</a>
+</p>
+
+<p align="center">
+<a href="public/1.png"><img src="public/1.png" alt="Portfolio screenshot 1" width="49%"></a>
+<a href="public/2.png"><img src="public/2.png" alt="Portfolio screenshot 2" width="49%"></a>
+<br>
+<a href="public/3.png"><img src="public/3.png" alt="Portfolio screenshot 3" width="49%"></a>
+<a href="public/4.png"><img src="public/4.png" alt="Portfolio screenshot 4" width="49%"></a>
+<br>
+<a href="public/5.png"><img src="public/5.png" alt="Portfolio screenshot 5" width="49%"></a>
+<a href="public/6.png"><img src="public/6.png" alt="Portfolio screenshot 6" width="49%"></a>
+</p>
 
 <br>
 
